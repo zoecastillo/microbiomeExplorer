@@ -1,0 +1,764 @@
+@import url('https://fonts.googleapis.com/css?family=Roboto:100,300,400,500');
+
+
+/*################################## css for overall layout ##################################*/
+
+.meIcon{
+  display: flex;
+  margin-top: 12px;
+}
+
+.meTitle { 
+  width: 323px;
+  height: 28px;
+  font-size: 29px;
+  font-weight: 300;
+  font-style: normal;
+  font-stretch: normal;
+  line-height: normal;
+  font-family: 'Roboto', sans-serif;
+  letter-spacing: 1px;
+  color: #000000;
+  background-color: #dbdbdb;
+  padding-left: 0;
+  margin-top: 10px;
+  text-align: left;
+}
+
+
+.sidebar-collapse .left-side, .sidebar-collapse .main-sidebar{ 
+ transform: translate(0,0);
+ width: 74px;
+}
+
+.sidebar-menu .fa{
+  margin-left:7px;
+}
+
+.sidebar-collapse .content{
+  margin-left: 74px;
+}
+      
+.skin-blue .main-header .logo {
+  height: 74px;
+  width: 74px;
+  font-size: 24px;
+  background-color: #161616;
+  padding-left: 8px;
+  padding-top: 0;
+}
+
+.skin-blue .main-header .logo .sidebar-toggle{
+  font-size: 28px;
+  color: #f1fff3;
+  background-color: #000000;
+}
+
+.skin-blue .main-header .logo:hover {
+  color: #f1fff3;
+  background-color: #000000;
+}
+
+.skin-blue .main-header .navbar {
+  height: 74px;
+  background-color: #dbdbdb;
+  margin-left: 74px;
+}
+
+.skin-blue .main-header .navbar .sidebar-toggle{
+  width: 0;
+  background-color: #dbdbdb;
+  visibility: hidden;
+}
+
+.skin-blue .main-header .navbar .sidebar-toggle:hover{
+  width: 0;
+  background-color: #000000;
+  visibility: hidden;
+}
+
+.skin-blue .main-sidebar {
+  font-size: 24px;
+  font-weight: 400;
+  font-style: normal;
+  font-stretch: normal;
+  line-height: normal;
+  font-family: 'Roboto', sans-serif;
+  margin-top:24px;
+  background-color: #646b70;
+}
+
+.skin-blue .main-sidebar span{
+  font-size: 18px;
+  font-weight: 300;
+  font-style: normal;
+  font-stretch: normal;
+  line-height: normal;
+  font-family: 'Roboto', sans-serif;
+  margin-left: 32px;
+}
+
+label {
+  font-size: 15px;
+  font-weight: 400;
+  font-style: normal;
+  font-stretch: normal;
+  line-height: normal;
+  font-family: 'Roboto', sans-serif;
+  opacity: 0.8;
+}
+
+label[for=loadnfilter-readnum]
+{
+    font-size: 12px;
+}
+
+#legendtext {
+  font-size: 12px;
+  font-weight: 500;
+  font-style: normal;
+  font-stretch: normal;
+  line-height: normal;
+  font-family: 'Roboto', sans-serif;
+}
+
+.skin-blue .sidebar a {
+    color: #dbdbdb;
+}
+
+.skin-blue .main-sidebar .sidebar .sidebar-menu .active a{
+  background-color: #dbdbdb;
+  border-left-color: #000000;
+  color: #000000;
+}
+
+.skin-blue.sidebar-collapse .main-sidebar .sidebar .sidebar-menu span{
+  visibility: hidden; 
+}
+
+.skin-blue .main-sidebar .sidebar .sidebar-menu a:hover{
+  background-color: #000000;
+  border-left-color: #000000;
+  color: #ffffff;
+}
+
+
+.skin-blue .content {
+  background-color: #fdfdfc;
+}
+
+.skin-blue .left-side, .skin-blue .main-sidebar, .skin-blue .wrapper {
+  background-color: #fdfdfc;
+}
+
+.skin-blue .content-wrapper {
+  background-color: #fdfdfc;
+}
+
+.line {
+  width: 5px;
+}
+
+.tab-content {
+  padding: 10px;
+}
+
+.tab-pane {
+  padding: 10px;
+}
+
+.nav-tabs-custom>.nav-tabs>li.active {
+    border-top-color: #000000;
+}
+
+.nav-tabs-custom>.nav-tabs>li.header {
+    line-height: 35px;
+    padding: 0 10px;
+    font-size: 23px;
+    color: #444;
+    opacity: 0.9;
+}
+
+.nav-tabs-custom>.nav-tabs {
+    margin: 0;
+    border-bottom-color: #f4f4f4;
+    border-top-right-radius: 3px;
+    border-top-left-radius: 3px;
+    padding: 5px;
+    font-family: 'Roboto', sans-serif;
+    letter-spacing: 1px;
+    font-size: 18px;
+}
+
+.nav li a.disabled {
+  color: #dbdbdb !important;
+  cursor: not-allowed !important;
+}
+
+.box {
+    position: relative;
+    border-radius: 3px;
+    background: #fff;
+    border-top: 3px solid #ffffff;
+    margin-bottom: 20px;
+    width: 100%;
+    box-shadow: none;
+}
+
+.box-header .box-title, .box-header>.fa, .box-header>.glyphicon, .box-header>.ion {
+    display: table-cell;
+}
+
+.box-title {
+    text-align: center;
+    vertical-align: middle;
+    font-family: 'Roboto', sans-serif;
+    padding-top: 20px;
+    padding-bottom: 15px;
+    padding-right: 15px;
+    font-weight: 400;
+    font-style: normal;
+    font-stretch: normal;
+    line-height: normal;
+    letter-spacing: 1px;
+    color: #222d33;
+    opacity: 0.9;
+}
+
+.skin-blue .box-body{
+  padding-top: 25px;
+  background-color: #ffffff;
+}
+
+.box.box-solid.box-primary>.box-header {
+  color: #000000;
+  background: #1aa980;
+}
+
+.box.box-solid.box-primary{
+  border-bottom-color: #158f6c;
+  border-left-color: #158f6c;
+  border-right-color: #158f6c;
+  border-top-color: #158f6c;
+}
+
+.box.box-solid.box-primary>.box-body {
+  padding-left: 25px;
+}
+
+
+/* HEADER STYLING */
+
+
+h4{
+  display: table-cell; 
+  text-align: center; 
+  vertical-align: middle; 
+  font-family: 'Roboto', sans-serif;
+  padding-top: 30px;
+  padding-bottom: 15px;
+  padding-right:15px;
+  font-size: 17px;
+  font-weight: 500;
+  font-style: normal;
+  font-stretch: normal;
+  line-height: normal;
+  letter-spacing: 1px;
+  color: #222d33;
+  opacity: 0.9;
+}
+
+
+h5{
+  font-family: 'Roboto', sans-serif;
+  padding-top: 5px;
+  font-size: 17px;
+  font-weight: 500;
+  font-style: normal;
+  font-stretch: normal;
+  line-height: normal;
+  letter-spacing: 1px;
+  text-decoration: underline;
+  color: #222d33;
+  opacity: 0.9;
+}
+
+h2{
+  display: table-cell; 
+  text-align: center; 
+  vertical-align: middle; 
+  font-family: 'Roboto', sans-serif;
+  padding-top: 40px;
+  padding-bottom: 30px;
+  padding-right:15px;
+  font-size: 30px;
+  font-weight: 400;
+  font-style: normal;
+  font-stretch: normal;
+  line-height: normal;
+  letter-spacing: 1px;
+  color: #222d33;
+}
+
+/* BUTTON STYLING */
+
+
+.input-group-btn:first-child>.btn {
+  border-color: black;
+  background-color: #dbdbdb;
+  margin-left: 5px;
+}
+
+.btn-default {
+    background-color: #dbdbdb;
+    color: black;
+    border-color: black;
+    margin-left: 5px;
+    margin-bottom: 5px;
+}
+
+.btn-default:hover {
+    background-color: black;
+    color: #dbdbdb;
+}
+
+.btn.btn-default.btn-file {
+    background-color: #dbdbdb;
+    color: black;
+    border-color: black;
+    margin-left: 5px;
+}
+
+.btn.btn-default.btn-file:hover {
+    background-color: black;
+    color: #dbdbdb;
+}
+
+#actionbuttonrow {
+  margin-top: 30px;
+  margin-left: -5px;
+}
+
+#actionbuttonrow2 {
+  margin-top: 5px;
+  margin-left: -5px;
+}
+
+a.btn {
+  width: 120px;
+} 
+
+.btn.btn-danger.action-button.dropdown-toggle.shiny-bound-input.disabled{
+  opacity: 0;
+}
+
+.btn.btn-danger.action-button.dropdown-toggle.shiny-bound-input {
+  opacity: 1;
+}
+
+.btn-danger, .btn-danger:focus {
+  color:black;
+    background-color: #dbdbdb;
+    border-color: black;
+}
+
+.btn-danger:hover {
+  color: white;
+    background-color: black;
+    border-color: black;
+}
+
+.btn-danger:active, .open>.dropdown-toggle.btn-danger, .open>.dropdown-toggle.btn-danger:hover, .open>.dropdown-toggle.btn-danger:focus {
+  color: white;
+    background-color: darkred;
+    border-color: black;
+}
+
+/* RADIOBUTTON STYLING */
+
+.radiobtn.btn-primary.active{
+  background-color: black;
+  border-color: black;
+}
+
+.radiobtn.btn-primary{
+  background-color: #808080;
+  border-color: black;
+}
+
+.pretty {
+    position: relative;
+    display: inline-block;
+    margin-right: 1em;
+    margin-top: 5px;
+    white-space: nowrap;
+    line-height: 1;
+}
+
+.pretty input:checked~.state.p-success-o .icon, .pretty input:checked~.state.p-success-o .svg, .pretty input:checked~.state.p-success-o svg, .pretty.p-toggle .state.p-success-o .icon, .pretty.p-toggle .state.p-success-o .svg, .pretty.p-toggle .state.p-success-o svg {
+    color: whitesmoke;
+}
+
+.pretty .state label {
+    position: initial;
+    display: inline-block;
+    font-weight: 400;
+    margin-top: -2px;
+    text-indent: 25px;
+    min-width: calc(1em + 2px);
+}
+
+/* STYLING OF INPUT ELEMENTS */
+
+.input-group .form-control:last-child {
+    border-color: black;
+    background-color: whitesmoke;
+}
+
+.form-control {
+    border-radius: 0;
+    box-shadow: none;
+    border-color: black;
+    background-color: whitesmoke;
+}
+
+.selectize-control {
+    border-radius: 0;
+    box-shadow: none;
+    border-color: black;
+    background-color: whitesmoke;
+}
+
+.selectize-input {
+    border-radius: 0;
+    box-shadow: none;
+    border-color: black;
+    background-color: whitesmoke;
+}
+
+.selectize-input .item{
+  margin-top: 4px;
+  padding-top: 4px;
+}
+
+.selectize-dropdown-content{
+  margin-top: 3px;
+  padding-top: 3px;
+  background-color: #ecebea;
+}
+
+.selectize-dropdown-content.option.selected{
+  color: #000000;
+}
+
+
+/* PLOTLY STYLING */
+
+.modebar-group {
+  margin-right: 20px !important;
+}
+
+.js-plotly-plot .plotly .modebar {
+    left: 0%;
+}
+
+.plot-container.plotly{
+  overflow-x: scroll;
+}
+
+/* DATA INPUT */
+
+#loadnfilter-dataqcplot {
+    padding: 10px;
+    margin-top: 10px;
+}
+
+
+#loadnfilter-dbimport-projectselect{
+  margin-left: 5px;
+}
+
+#loadnfilter-sampleotus {
+    padding: 10px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    margin-left: 17px;
+}
+
+/*
+#analysiscol {
+  padding: 10px;
+  padding-right: 100px;
+}
+
+#aggregationcol {
+  padding: 10px;
+  padding-right: 100px;
+}
+
+#buttoncol {
+  padding: 10px;
+  padding-top: 32px;
+}
+
+#buttoncolrow {
+  margin-top: 5px;
+  margin-bottom: 5px;
+}*/
+
+
+.shiny-file-input-progress {
+  display: none
+}
+
+.disabledtab {
+  opacity:0.5;
+}
+
+.disabled {
+  opacity:0.5;
+}
+
+/* SLIDERS */
+.irs-single, .irs-bar-edge, .irs-bar{
+  background: darkred;
+  border: black;
+}
+  
+.phenoremoverow {
+  margin-top: 10px;
+}
+
+/*
+.phenoremoverow .shiny-options-group{
+ -webkit-column-count: 2;
+ -moz-column-count: 2;
+ -o-column-count: 2;
+  column-count: 2; 
+  margin-top: 5px;
+  margin-left: 5px;
+}
+
+.shiny-input-checkboxgroup label ~ .shiny-options-group, .shiny-input-radiogroup label ~ .shiny-options-group {
+  margin-top: 5px;
+  
+}
+*/
+
+.bootstrap-switch .bootstrap-switch-handle-off.bootstrap-switch-primary, .bootstrap-switch .bootstrap-switch-handle-on.bootstrap-switch-primary {
+    color: #fff;
+    background: darkred;
+}
+
+#loadnfilter-featpres {
+  margin-left: 60px;
+}
+
+#histogramrow {
+  margin-top: 25px;
+}
+
+#sampleoturow {
+  margin-bottom: 80px;
+}
+
+#loadnfilter-checkboxcol label {
+    font-size: 12px;
+    max-width: 100px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+#loadnfilter-checkboxcol label.control-label {
+    max-width: 250px;
+    font-size: 14px;
+    white-space: initial;
+}
+
+#loadnfilter-datauploadcol {
+  margin-top: 40px;
+}
+
+.modal-footer .btn+.btn {
+    margin-bottom: 5px; 
+    margin-left: 5px; 
+}
+
+
+
+/*################################ PHENOTYPE TAB ############################## */
+
+#phenotab-phenointeractioncol {
+  padding-top: 80px;
+}
+
+#phenotab-phenodatatable{
+  padding-right: 10px;
+}
+
+table{
+  border-color: #000000;
+}
+
+th{
+  color:#000000;
+  background-color: #dbdbdb;
+}
+
+th:hover{
+  background-color: black;
+  color: #dbdbdb;
+}
+
+table.dataTable thead .sorting:after {
+  opacity: 0.5;
+}
+
+table.dataTable thead .sorting:after:hover {
+  color: #dbdbdb;
+  opacity: 1;
+}
+
+.pagination>li>a{
+    background-color: #fdfdfc;
+    color: #000000;
+    opacity: 0.8;
+    border-color: #000000;
+}
+
+.pagination>.active>a, .pagination>.active>a:focus, .pagination>.active>span, .pagination>.active>span:focus {
+    color: #000000;
+    background-color: #dbdbdb;
+    border-color: #000000;
+}
+
+.pagination>li>a:hover, .pagination>.active>a:hover {
+    background-color: black;
+    color: #dbdbdb;
+    border-color: #000000;
+}
+
+
+.dropdown-menu>.active>a, .dropdown-menu>.active>a:focus{
+  background-color: #dbdbdb;
+  color: #000000;
+}
+
+.dropdown-menu>.active>a:hover {
+  background-color: black;
+  color: #dbdbdb;
+}
+
+.dropdown-menu>li>a {
+  background-color: #fdfdfc;
+  color: #000000;
+  opacity: 0.8;
+}
+
+.dropdown-menu>li>a:hover {
+  background-color: black;
+  color: #dbdbdb;
+}
+
+tbody tr.even.active, tbody tr.odd.active, .table.dataTable tbody td.active, .table.dataTable tbody tr.active td, .table.dataTable tbody tr.even.selected td, .table.dataTable tbody tr.odd.selected td {
+  background-color: #dbdbdb !important;
+  color: #000000 !important;
+}
+
+
+tbody tr.even:hover, tbody tr.odd:hover {
+  background-color: black;
+  color: #dbdbdb;
+}
+
+td:first-child {
+  min-width: 20px !important;
+}
+
+.dataTables_filter {
+  margin-top: -35px;
+}
+
+.dataTables_length {
+  margin-top: 10px;
+  margin-bottom: -35px;
+}
+
+
+/*################################# FEATURE TABLE TAB #########################################*/
+
+#featuretab-featannocol{
+  padding-top: 80px;
+}
+
+#featuretab-featuredatatable {
+  opacity: 1;
+}
+
+#featuretab-featuredatatable.transparent {
+  opacity: 0.5;
+}
+
+
+/*################################### INTRA SAMPLE ANALYSIS #####################################*/
+
+
+.legend {
+  margin-top: 15px;
+}
+
+.percentage {
+  margin-top: -15px;
+  color: grey;
+}
+
+.percentage .hide {
+  display: none;
+}
+
+/*############################# CORRELATION ANALYSIS ####################################*/
+
+.statsrow {
+  padding-top: 10px;
+}
+
+caption {
+    color: black;
+    font-size: 15px;
+    font-weight: 600;
+}
+
+#longAnalysis-longResults-longplot {
+   margin-top: 50px;
+}
+
+#longAnalysis-longResults-longplot_column label {
+    color: white;
+}
+
+#longAnalysis-longResults-longplot_column .selectize-control.multi {
+    max-width: 250px;
+}
+
+select:empty {
+   display: none;
+}
+
+
+/* REPORTS STYLING */
+
+
+.fa-check{
+  background-color: darkred;
+}
+
+#reportrow {
+  padding-bottom: 15px;
+}
+
+#rcode {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 12px;
+  padding-top: 5px;
+}

@@ -1,0 +1,59 @@
+Package: microbiomeExplorer
+Type: Package
+Title: Microbiome Exploration App
+Version: 1.0.0
+Date: 2020-07-27
+Authors@R: c(
+    person("Joseph", "Paulson", , "paulson.joseph@gene.com", role = c("aut")),
+    person("Janina", "Reeder", , "reeder.janina@gene.com", role = c("aut", "cre")),
+    person("Mo", "Huang", role = c("aut")),
+    person("Genentech", role = c("cph", "fnd"))
+    )
+Description: The MicrobiomeExplorer R package is designed to facilitate the analysis and visualization of marker-gene survey feature data. 
+  It allows a user to perform and visualize typical microbiome analytical workflows either through the command line or an interactive 
+  Shiny application included with the package. In addition to applying common analytical workflows the application enables automated 
+  analysis report generation.
+License: MIT + file LICENSE
+Imports:
+  shiny,
+  shinyjs,
+  shinydashboard,
+  shinycssloaders,
+  shinyWidgets,
+  magrittr,
+  rmarkdown (>= 1.9.0),
+  DESeq2,
+  RColorBrewer, 
+  dplyr,
+  tidyr, 
+  rlang,
+  knitr,
+  readr, 
+  DT (>= 0.12.0), 
+  biomformat, 
+  tools,  
+  stringr, 
+  vegan,
+  matrixStats,
+  heatmaply,
+  car,
+  broom,
+  limma,
+  reshape2,
+  tibble,
+  forcats,
+  lubridate,
+  plotly (>= 4.9.1)
+Depends:
+  metagenomeSeq, 
+  Biobase
+Suggests: 
+    V8,
+    testthat (>= 2.1.0)
+DeploySubPath: microbiomeExplorer
+biocViews: Classification, Clustering, GeneticVariability,
+    DifferentialExpression, Microbiome, Metagenomics, Normalization, Visualization,
+    MultipleComparison, Sequencing, Software
+Encoding: UTF-8
+RoxygenNote: 7.1.0
+VignetteBuilder: knitr
