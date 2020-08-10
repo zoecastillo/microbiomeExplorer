@@ -15,6 +15,10 @@ fluidRow containing the ui code
 \description{
 inter Analysis Module - UI
 }
+\examples{
+interAnalysisUI("interanalysis_id")
+
+}
 \author{
 Janina Reeder
 }

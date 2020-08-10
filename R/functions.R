@@ -4,6 +4,9 @@
 #' Main function to start the Microbiome Explorer Shiny app via a command line
 #' call
 #'
+#' @return the shiny application
+#' 
+#'
 #' @export
 runMicrobiomeExplorer <- function(){
   shiny::runApp(appDir = system.file("shiny", package = "microbiomeExplorer"))
@@ -138,6 +141,7 @@ addFeatData <- function(MRobj, featdata = NULL) {
 #'
 #' @importFrom metagenomeSeq biom2MRexperiment loadMeta newMRexperiment
 #' @importFrom Biobase pData<- fData<-
+#' @importFrom methods is
 #'
 #' @export
 readData <- function(filepath, type = "RDS") {
@@ -183,7 +187,7 @@ readData <- function(filepath, type = "RDS") {
   } else {
     return(NULL)
   }
-  if(class(MRobj) != "MRexperiment"){
+  if(!is(MRobj, "MRexperiment")){
     return(NULL)
   } 
   ## add required columns if they aren't available yet
@@ -217,7 +221,6 @@ readData <- function(filepath, type = "RDS") {
 #' @author Janina Reeder
 #'
 #' @return character string for the filetype
-#' @export
 getFileType <- function(fileext) {
   switch(tolower(fileext),
          "rds" = "RDS",
@@ -244,6 +247,11 @@ getFileType <- function(fileext) {
 #' @author Janina Reeder
 #'
 #' @return the filtered MRobj
+#' 
+#' @examples 
+#' data("mouseData", package = "metagenomeSeq")
+#' filterMEData(MRobj = mouseData, minpresence = 4, minfeats = 300)
+#' 
 #' @export
 filterMEData <- function(MRobj, minpresence = 1, 
                          minfeats = 2, minreads = 2) {
@@ -275,6 +283,12 @@ filterMEData <- function(MRobj, minpresence = 1,
 #' @author Janina Reeder
 #'
 #' @return the filtered MRobj
+#' 
+#' @examples 
+#' data("mouseData", package = "metagenomeSeq")
+#' filterByPheno(MRobj = mouseData, 
+#'   rm_phenovalues = list("diet" = c("BK"),"mouseID" = c("PM1","PM10")))
+#' 
 #' @export
 filterByPheno <- function(MRobj, rm_phenovalues) {
   samstoremove <- rowSums(
@@ -327,8 +341,6 @@ parseInteractionName <- function(interactionName) {
 #' @param toc Table of contents. Default is TRUE.
 #'
 #' @return A character vector where each element is a line in the R script.
-#'
-#' @export
 createHeader <- function(title = "MicrobiomeExplorer Report", 
                          author = "",
                          date = "",
@@ -426,8 +438,6 @@ createHeader <- function(title = "MicrobiomeExplorer Report",
 #' @param intro_text Introductory text to include with the report (optional)
 #'
 #' @return A character vector where each element is a line in the R script.
-#'
-#' @export
 generateReport <- function(rcode,
                            filename = "report",
                            dir = "out",
@@ -447,8 +457,9 @@ generateReport <- function(rcode,
   
   if (!is.null(intro_text) && length(intro_text) > 0) {
     intro_text <- paste("#' ## Introduction\n", intro_text, "\n\n  ")
-    intro_text <- sapply(intro_text, stringr::str_replace_all,
-                         pattern = "\n", replacement = "\n#' ")
+    intro_text <- vapply(intro_text, stringr::str_replace_all,
+                         pattern = "\n", replacement = "\n#' ", 
+                         FUN.VALUE = character(1))
   } else {
     intro_text <- NULL
   }
@@ -472,7 +483,8 @@ generateReport <- function(rcode,
   out.ext <- c("Rmd", 
                gsub("powerpoint", "pptx", 
                     gsub("word", "docx", 
-                         sapply(strsplit(output, split = "_"), `[[`, 1))))
+                         vapply(strsplit(output, split = "_"), `[[`, 1,
+                                FUN.VALUE = character(1)))))
   print(c(rscript, paste(paste(dir, filename, sep = "/"), 
                          out.ext, sep = ".")))
 }

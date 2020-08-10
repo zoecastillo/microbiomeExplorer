@@ -56,3 +56,10 @@ package.
 DeSeq2 performs differential gene expression analysis based on the negative 
 binomial distribution
 }
+\examples{
+data("mouseData", package = "metagenomeSeq")
+aggdat <- aggFeatures(mouseData, level = "genus")
+runDiffTest(aggdat = aggdat,level = "genus", 
+            phenotype = "diet", method = "Kruskal-Wallis")
+
+}

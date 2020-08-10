@@ -23,8 +23,8 @@ plotAlpha(
 
 \item{level}{Feature level}
 
-\item{index}{Diversity index, one of "shannon", "simpson", "invsimpson" or "richness"
-(=number of features). Default is "shannon".}
+\item{index}{Diversity index, one of "shannon", "simpson", "invsimpson" or 
+"richness" (=number of features). Default is "shannon".}
 
 \item{x_var}{Phenotype to aggregate over on X-axis. Default by "SAMPLE_ID".}
 
@@ -48,4 +48,10 @@ plotly plot object
 \description{
 This function plots the alpha diversity. See ?vegan::diversity for details
 on the available index
+}
+\examples{
+data("mouseData", package = "metagenomeSeq")
+aggdat <- aggFeatures(mouseData, level = "genus")
+plotAlpha(aggdat, level = "genus", index = "shannon", x_var = "diet")
+
 }

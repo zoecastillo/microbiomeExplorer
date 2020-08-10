@@ -86,7 +86,6 @@ makeQCPlot(meData, col_by = "diet",
        allowWebGL = FALSE)
 
 plotlySampleBarplot(meData,
-                    plotTitle = "Unique features per sample",
                     col_by = "diet")
 ```
 

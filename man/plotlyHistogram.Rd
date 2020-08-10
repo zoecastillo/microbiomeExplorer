@@ -32,3 +32,10 @@ plotly plot object
 \description{
 Function plotting a plotly histogram on the given histvalue
 }
+\examples{
+data("mouseData", package = "metagenomeSeq")
+plotlyHistogram(histvalue = colSums(MRcounts(mouseData) > 0),
+  plotTitle = "Feature distribution",
+  xaxisTitle = "features", yaxisTitle = "frequency")
+
+}

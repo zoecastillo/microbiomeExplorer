@@ -41,8 +41,18 @@ plotLongFeature(
 
 \item{pwidth}{overall plot width; default is 650}
 }
+\value{
+plotly object holding long feature plot
+}
 \description{
 This function plots the reads of a particular feature over different time points.
+}
+\examples{
+data("mouseData", package = "metagenomeSeq")
+aggdat <- aggFeatures(mouseData, level = "genus")
+plotLongFeature(aggdat, feature = "Prevotella", x_var = "diet", 
+                id_var = "mouseID")
+
 }
 \author{
 Janina Reeder, Mo Huang

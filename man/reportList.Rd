@@ -35,6 +35,9 @@ reportList(
 
 \item{reset}{boolean reactive which resets the module if TRUE}
 }
+\value{
+report list server fragment - no return value
+}
 \description{
 Report tab module server
 }

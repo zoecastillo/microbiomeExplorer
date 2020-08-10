@@ -40,3 +40,9 @@ plotly heatmap
 \description{
 This function plots a heatmap of feature abundance.
 }
+\examples{
+data("mouseData", package = "metagenomeSeq")
+aggdat <- aggFeatures(mouseData, level = "genus")
+plotHeatmap(aggdat, sort_by = "Fano")
+
+}

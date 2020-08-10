@@ -7,44 +7,52 @@
 #' @author Janina Reeder
 #'
 #' @return box containing ui element
-#' @export
 longInputUI <- function(id) {
   ns <- NS(id)
   
-  box(width = 12, id = ns("analysisbox"),
-      h4("ANALYSIS PARAMETERS"),
-      selectizeInput(ns("featureselect"),
-                     label = "Select Feature", choices = "", 
-                     multiple = FALSE, 
-                     width = "250px"
+  box(
+    width = 12, id = ns("analysisbox"),
+    h4("ANALYSIS PARAMETERS"),
+    selectizeInput(
+      ns("featureselect"),
+      label = "Select Feature", choices = "", 
+      multiple = FALSE, 
+      width = "250px"
+    ),
+    div(
+      selectInput(
+        ns("comparison"),
+        label = "Longitudinal phenotype", choices = "", 
+        multiple = FALSE, selectize = FALSE, width = "250px"
       ),
-      div(
-        selectInput(ns("comparison"),
-                    label = "Longitudinal phenotype", choices = "", 
-                    multiple = FALSE, selectize = FALSE, width = "250px"
-        ),
-        selectizeInput(ns("phenolevels"),
-                    label = "Phenotype level order",
-                    choices = "", multiple = TRUE, width = "250px"
-        ),
-        selectInput(ns("phenoid"),
-                    label = "ID phenotype (optional)", choices = "", 
-                    multiple = FALSE, selectize = FALSE, width = "250px"
-        )
+      selectizeInput(
+        ns("phenolevels"),
+        label = "Phenotype level order",
+        choices = "", multiple = TRUE, width = "250px"
       ),
-      ## buttons are used to submit events. This ensures plots are not redrawn 
-      ## while user still adjusts parameters
-      div(id = ns("buttondiv"),
-          fluidRow( width = 12, id = "actionbuttonrow",
-                    ## update analysis outputs (plots/tables)
-                    actionButton(ns("updatebutton"), 
-                                 icon = icon("far fa-chart-bar"),
-                                 label = HTML("&nbsp;UPDATE"), width = "120px"),
-                    actionButton(ns("reportButton"), 
-                                 label = HTML("<i class='far fa-bookmark'></i>&nbsp;&nbsp;REPORT"), 
-                                 width = "120px")
-          )
+      selectInput(
+        ns("phenoid"),
+        label = "ID phenotype (optional)", choices = "", 
+        multiple = FALSE, selectize = FALSE, width = "250px"
       )
+    ),
+    ## buttons are used to submit events. This ensures plots are not redrawn 
+    ## while user still adjusts parameters
+    div(
+      id = ns("buttondiv"),
+      fluidRow( 
+        width = 12, id = "actionbuttonrow",
+        ## update analysis outputs (plots/tables)
+        actionButton(
+          ns("updatebutton"), 
+          icon = icon("far fa-chart-bar"),
+          label = HTML("&nbsp;UPDATE"), width = "120px"),
+        actionButton(
+          ns("reportButton"), 
+          label = HTML("<i class='far fa-bookmark'></i>&nbsp;&nbsp;REPORT"), 
+          width = "120px")
+      )
+    )
   )
 }
 
@@ -65,10 +73,9 @@ longInputUI <- function(id) {
 #' @importFrom Biobase pData fData
 #'
 #' @return list holding all chosen values and the selected feature
-#' @export
 longInput <- function(input, output, session, 
-                          meData, facetOptions = NULL,
-                          reset, aggDat = reactive(NULL)) {
+                      meData, facetOptions = NULL,
+                      reset, aggDat = reactive(NULL)) {
   ns <- session$ns
   
   ## reactive value storing choices made in the UI
@@ -123,9 +130,9 @@ longInput <- function(input, output, session,
         na_level = "NA"))
     )
     updateSelectizeInput(session, "phenolevels",
-                      choices = phenoOpts(),
-                      options = list(placeholder = "Select levels"),
-                      selected = "")
+                         choices = phenoOpts(),
+                         options = list(placeholder = "Select levels"),
+                         selected = "")
     remainingIds <- names(pData(meData()))[!(names(pData(meData())) 
                                              %in% input$comparison)]
     updateSelectInput(session, "phenoid", 
@@ -136,11 +143,11 @@ longInput <- function(input, output, session,
     req(!is.null(input$comparison))
     req(input$comparison == "")
     updateSelectizeInput(session, "phenolevels",
-                      choices = "",
-                      options = list(placeholder = "Select levels"),
-                      selected = "")
+                         choices = "",
+                         options = list(placeholder = "Select levels"),
+                         selected = "")
   })
-
+  
   ## main control button: store input choices in chosenValues
   observeEvent(input$updatebutton, {
     comparison <- NULL

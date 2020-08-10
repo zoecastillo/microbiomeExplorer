@@ -9,6 +9,8 @@
 #'
 #' @return fluidRow containing the ui code
 #' 
+#' @examples diffAnalysisUI("diffanalysis_id")
+#' 
 #' @export
 diffAnalysisUI <- function(id) {
   ns <- NS(id)
@@ -50,8 +52,6 @@ diffAnalysisUI <- function(id) {
 #' 
 #'
 #' @return reactive holding code to be used in reports
-#' 
-#' @export
 diffAnalysis <- function(input, output, session, data, levelOpts,
                           chosenLevel, resetInput, aggData, normalizedData) {
   ## diff SAMPLE ANALYSIS

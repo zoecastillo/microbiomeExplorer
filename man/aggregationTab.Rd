@@ -30,7 +30,8 @@ aggregationTab(
 \item{meData}{the main MRexperiment object}
 }
 \value{
-reactive list holding aggregated object, aggregation code and boolean on normalization
+reactive list holding aggregated object, aggregation code and 
+boolean on normalization
 }
 \description{
 Aggregation module server function

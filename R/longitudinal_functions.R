@@ -14,11 +14,19 @@
 #' @param fixedHeight sets a specific plot height (differential analysis)
 #' @param x_levels restrict to specific levels of x_var (differential analysis)
 #' @param pwidth overall plot width; default is 650 
+#' 
+#' @return plotly object holding long feature plot
 #'
 #' @author Janina Reeder, Mo Huang
 #'
 #' @importFrom metagenomeSeq MRcounts
 #' @importFrom Biobase pData
+#' 
+#' @examples 
+#' data("mouseData", package = "metagenomeSeq")
+#' aggdat <- aggFeatures(mouseData, level = "genus")
+#' plotLongFeature(aggdat, feature = "Prevotella", x_var = "diet", 
+#'                 id_var = "mouseID")
 #'
 #' @export
 plotLongFeature <- function(aggdat, feature, 

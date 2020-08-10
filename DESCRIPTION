@@ -1,11 +1,11 @@
 Package: microbiomeExplorer
 Type: Package
 Title: Microbiome Exploration App
-Version: 1.0.0
+Version: 0.99.0
 Date: 2020-07-27
 Authors@R: c(
     person("Joseph", "Paulson", , "paulson.joseph@gene.com", role = c("aut")),
-    person("Janina", "Reeder", , "reeder.janina@gene.com", role = c("aut", "cre")),
+    person("Janina", "Reeder", , "reederj1@gene.com", role = c("aut", "cre")),
     person("Mo", "Huang", role = c("aut")),
     person("Genentech", role = c("cph", "fnd"))
     )
@@ -43,6 +43,7 @@ Imports:
   tibble,
   forcats,
   lubridate,
+  methods,
   plotly (>= 4.9.1)
 Depends:
   metagenomeSeq, 
@@ -53,7 +54,7 @@ Suggests:
 DeploySubPath: microbiomeExplorer
 biocViews: Classification, Clustering, GeneticVariability,
     DifferentialExpression, Microbiome, Metagenomics, Normalization, Visualization,
-    MultipleComparison, Sequencing, Software
+    MultipleComparison, Sequencing, Software, ImmunoOncology
 Encoding: UTF-8
-RoxygenNote: 7.1.0
+RoxygenNote: 7.1.1
 VignetteBuilder: knitr

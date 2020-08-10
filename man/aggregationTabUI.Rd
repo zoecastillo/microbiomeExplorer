@@ -15,6 +15,10 @@ box holding aggregation input elements
 \description{
 Aggregation module ui function
 }
+\examples{
+aggregationTabUI("atu_id")
+
+}
 \author{
 Janina Reeder
 }

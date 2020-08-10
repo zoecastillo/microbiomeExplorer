@@ -17,3 +17,10 @@ the x slot limited to pcas after calling stats::prcomp on distmat
 \description{
 Function to compute the PCAs for a given distance matrix
 }
+\examples{
+data("mouseData", package = "metagenomeSeq")
+aggdat <- aggFeatures(mouseData, level = "genus")
+distmat <- computeDistMat(aggdat, dist_method = "bray")
+calculatePCAs(distmat, c(1,2))
+
+}

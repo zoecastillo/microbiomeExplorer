@@ -18,6 +18,12 @@ the filtered MRobj
 \description{
 Function to filter the MRexperiment by certain phenotype values
 }
+\examples{
+data("mouseData", package = "metagenomeSeq")
+filterByPheno(MRobj = mouseData, 
+  rm_phenovalues = list("diet" = c("BK"),"mouseID" = c("PM1","PM10")))
+
+}
 \author{
 Janina Reeder
 }

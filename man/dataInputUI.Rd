@@ -10,9 +10,16 @@ dataInputUI(id)
 \arguments{
 \item{id}{module identifier}
 }
+\value{
+fluidRow holding UI interface
+}
 \description{
 Main Data input UI where the user selects files to upload to the app or 
 connects to database
+}
+\examples{
+dataInputUI("datainput_id")
+
 }
 \author{
 Janina Reeder

@@ -8,35 +8,39 @@
 #' @author Janina Reeder
 #'
 #' @return fluidRow containing the ui code
+#' 
+#' @examples longAnalysisUI("longanalysis_id")
+#' 
 #' @export
 longAnalysisUI <- function(id) {
   ns <- NS(id)
   
   fluidRow(
-        width = 12,
-        column(
-            width = 3,
-            longInputUI(ns("longInput"))
+    width = 12,
+    column(
+      width = 3,
+      longInputUI(ns("longInput"))
+    ),
+    column(
+      width = 9,
+      fluidRow(
+        width = 11,
+        box(
+          width = 10,
+          p("Longitudinal analysis provides a module to compare the microbial 
+            composition across time points or conditions (e.g. tissues).
+            The order of the phenotype levels is preserved in the visualization.
+            Use the optional phenotype ID parameter to add connections 
+            between IDs over all selected time points/conditions.
+            Individual lines can be highlighted via mouse clicks or
+            the input area with option to choose colors. Select multiple
+            connections by holding the \"Shift\" key. Double clicks
+            near the edge of the plot remove selections.")
         ),
-        column(
-            width = 9,
-            fluidRow(
-                width = 11,
-                box(width = 10,
-                    p("Longitudinal analysis provides a module to compare the microbial composition
-                    across time points or conditions (e.g. tissues).
-                    The order of the phenotype levels is preserved in the visualization.
-                      Use the optional phenotype ID parameter to add connections 
-                      between IDs over all selected time points/conditions.
-                      Individual lines can be highlighted via mouse clicks or
-                      the input area with option to choose colors. Select multiple
-                      connections by holding the \"Shift\" key. Double clicks
-                       near the edge of the plot remove selections.")
-                ),
-                longResultsUI(ns("longResults"))
-            )
-        )
+        longResultsUI(ns("longResults"))
+      )
     )
+  )
 }
 
 
@@ -56,10 +60,8 @@ longAnalysisUI <- function(id) {
 #' 
 #'
 #' @return reactive holding code to be used in reports
-#'
-#' @export
 longAnalysis <- function(input, output, session, data, levelOpts,
-                          chosenLevel, resetInput, aggData, normalizedData) {
+                         chosenLevel, resetInput, aggData, normalizedData) {
   ns <- session$ns
   
   longSettings <- callModule(longInput,
@@ -71,12 +73,12 @@ longAnalysis <- function(input, output, session, data, levelOpts,
   )
   
   longResultsRep <- callModule(longResults,
-                             "longResults",
-                             aggDat = reactive(aggData$mrobj),
-                             featLevel = chosenLevel,
-                             longSettings = longSettings,
-                             normalizedData = normalizedData,
-                             reset = resetInput
+                               "longResults",
+                               aggDat = reactive(aggData$mrobj),
+                               featLevel = chosenLevel,
+                               longSettings = longSettings,
+                               normalizedData = normalizedData,
+                               reset = resetInput
   )
   
   return(longResultsRep)

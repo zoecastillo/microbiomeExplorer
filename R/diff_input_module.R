@@ -7,42 +7,52 @@
 #' @author Janina Reeder
 #'
 #' @return box containing ui element
-#' @export
 diffInputUI <- function(id) {
   ns <- NS(id)
   
   box(width = 12, id = ns("analysisbox"),
       h4("ANALYSIS PARAMETERS"),
-      selectInput(ns("method"),
-                  label = "Method", choices = getOption("me.diffmethods"), multiple = FALSE, 
-                  selectize = FALSE, width = "250px"
+      selectInput(
+        ns("method"),
+        label = "Method", 
+        choices = getOption("me.diffmethods"), 
+        multiple = FALSE, 
+        selectize = FALSE, 
+        width = "250px"
       ),
       div(
-        selectInput(ns("comparison"),
-                    label = "Comparison phenotype", choices = "", 
-                    multiple = FALSE, selectize = FALSE, width = "250px"
+        selectInput(
+          ns("comparison"),
+          label = "Comparison phenotype", choices = "", 
+          multiple = FALSE, selectize = FALSE, width = "250px"
         ),
-        selectInput(ns("phenolevel1"),
-                    label = "Comparison level 1",
-                    choices = "", multiple = FALSE, width = "250px"
+        selectInput(
+          ns("phenolevel1"),
+          label = "Comparison level 1",
+          choices = "", multiple = FALSE, width = "250px"
         ),
-        selectInput(ns("phenolevel2"),
-                    label = "Comparison level 2",
-                    choices = "", multiple = FALSE, width = "250px"
+        selectInput(
+          ns("phenolevel2"),
+          label = "Comparison level 2",
+          choices = "", multiple = FALSE, width = "250px"
         )
       ),
       ## buttons are used to submit events. This ensures plots are not redrawn 
       ## while user still adjusts parameters
-      div(id = ns("buttondiv"),
-          fluidRow( width = 12, id = "actionbuttonrow",
-                    ## update analysis outputs (plots/tables)
-                    actionButton(ns("updatebutton"), 
-                                 icon = icon("far fa-chart-bar"),
-                                 label = HTML("&nbsp;UPDATE"), width = "120px"),
-                    actionButton(ns("reportButton"), 
-                                 label = HTML("<i class='far fa-bookmark'></i>&nbsp;&nbsp;REPORT"), 
-                                 width = "120px")
-          )
+      div(
+        id = ns("buttondiv"),
+        fluidRow( 
+          width = 12, id = "actionbuttonrow",
+          ## update analysis outputs (plots/tables)
+          actionButton(
+            ns("updatebutton"), 
+            icon = icon("far fa-chart-bar"),
+            label = HTML("&nbsp;UPDATE"), width = "120px"),
+          actionButton(
+            ns("reportButton"), 
+            label = HTML("<i class='far fa-bookmark'></i>&nbsp;&nbsp;REPORT"), 
+            width = "120px")
+        )
       )
   )
 }
@@ -63,10 +73,9 @@ diffInputUI <- function(id) {
 #' @importFrom Biobase pData fData
 #'
 #' @return list holding all chosen values and the selected feature
-#' @export
 diffInput <- function(input, output, session, 
-                          meData, facetOptions = NULL,
-                          reset) {
+                      meData, facetOptions = NULL,
+                      reset) {
   ns <- session$ns
   
   ## reactive value storing choices made in the UI

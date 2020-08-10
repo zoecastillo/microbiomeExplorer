@@ -5,28 +5,34 @@
 #' In a deployed version this module should be replaced with database access
 #'
 #' @param id module identifier
+#' 
+#' @return div holding ui elements
 #'
 #' @author Janina Reeder
-#' 
-#' @export
 fileUploadUI <- function(id) {
   ns <- NS(id)
   
   div(
     ## inputs restricted to certain filetypes defined via global.R
-    fileInput(ns("datafile"),
-              label = "Upload Feature Count Data", 
-              accept = getOption("me.filetypes")),
-    shinyjs::disabled(div(id = ns("phenodiv"),
-                 fileInput(ns("phenofile"),
-                           label = "Link Phenotype Info", 
-                           accept = getOption("me.delim"))
-    )),
-    shinyjs::disabled(div(id = ns("featdiv"),
-                 fileInput(ns("featfile"),
-                           label = "Add Taxonomy Info", 
-                           accept = getOption("me.delim"))
-    ))
+    fileInput(
+      ns("datafile"),
+      label = "Upload Feature Count Data", 
+      accept = getOption("me.filetypes")),
+    shinyjs::disabled(
+      div(
+        id = ns("phenodiv"),
+        fileInput(
+          ns("phenofile"),
+          label = "Link Phenotype Info", 
+          accept = getOption("me.delim"))
+      )),
+    shinyjs::disabled(
+      div(
+        id = ns("featdiv"),
+        fileInput(ns("featfile"),
+                  label = "Add Taxonomy Info", 
+                  accept = getOption("me.delim"))
+      ))
   )
 }
 
@@ -45,8 +51,6 @@ fileUploadUI <- function(id) {
 #' @return boolean denoting successful upload of a file
 #'
 #' @author Janina Reeder
-#' 
-#' @export
 fileUpload <- function(input, output, session, 
                        meData, meName, initializeData, 
                        addPheno, dataSource, 
@@ -79,11 +83,12 @@ fileUpload <- function(input, output, session,
       meData(filterMEData(readData(input$datafile$datapath, 
                                    type = filetype), 
                           minpresence = 1, minfeats = 2, minreads = 2))
-      dataSource(paste0("meData <- filterMEData(readData(\"", 
-                        input$datafile$datapath, "\", type = \"", 
-                        filetype,
-                        "\"),minpresence = 1, minfeats = 2, minreads = 2)", "\n",
-                        "##Data file name: ",input$datafile$name))
+      dataSource(
+        paste0("meData <- filterMEData(readData(\"", 
+               input$datafile$datapath, "\", type = \"", 
+               filetype,
+               "\"),minpresence = 1, minfeats = 2, minreads = 2)", "\n",
+               "##Data file name: ",input$datafile$name))
       if (filetype %in% c("TAB", "CSV")) {
         shinyjs::enable("featdiv")
       } else if (filetype == "BIOM" & ncol(fData(meData())) < 2) {
@@ -208,106 +213,138 @@ fileUpload <- function(input, output, session,
 #' connects to database
 #'
 #' @param id module identifier
+#' 
+#' @return fluidRow holding UI interface
 #'
 #' @author Janina Reeder
+#' 
+#' @examples dataInputUI("datainput_id")
 #' 
 #' @export
 dataInputUI <- function(id) {
   ns <- NS(id)
   
   fluidRow(
-    column(width = 4, id = ns("datauploadcol"),
-           h4("UPLOAD DATA", style = "padding-top: 45px;"),
-           fileUploadUI(ns("fileupload")),
-           hr(),
-           shinyjs::disabled(div(
-               id = ns("filterdiv"),
-               h4("FILTER DATA", style = "padding-top: 20px;"),
-               h5("Features", style = "padding-top:0;"),
-               sliderInput(ns("featuresams"),
-                           label = "Minimum Sample Presence",
-                           value = 1, min = 1, max = 1000, 
-                           round = TRUE, width = "250px"),
-               h5("Samples"),
-               sliderInput(ns("minfeats"),
-                           label = "Minimum Number of Features",
-                           value = 2, min = 2, max = 1000, 
-                           round = TRUE, width = "250px"),
-               sliderInput(ns("minreads"),
-                           label = "Minimum Number of Reads",
-                           value = 2, min = 2, max = 1000, 
-                           round = TRUE, width = "250px"),
-               box(collapsible = TRUE, collapsed = TRUE, width = 10,
-                   style = "padding:0; margin-top: -40px;",
-                   numericInput(ns("readnum"),
-                                label = "Set min #reads",
-                                value = 2, min = 2,
-                                width = "100px")
-               )
-             )),
-           shinyjs::disabled(div(id = ns("phenodiv"), style = "margin-top: 100px",
-                        h5("Phenotypes", 
-                           style = "padding-top:0; margin-top: -11px;"),
-                        selectizeInput(ns("removepheno"),
-                                    label = "Remove Phenotypes",
-                                    choices = "", 
-                                    multiple = FALSE, 
-                                    options = list(placeholder = 
-                                                     "Select Phenotype"), 
-                                    width = "250px")
-           )),
-           shinyjs::disabled(div(id = ns("buttondiv"),
-                        fluidRow(width = 12, id = "actionbuttonrow2",
-                                 ## filter updates meData for further analysis
-                                 actionButton(ns("filterbutton"), 
-                                              icon = icon("fas fa-filter"),
-                                              label = HTML("&nbsp;FILTER"), 
-                                              width = "120px"),
-                                 ## resets back to original data 
-                                 actionButton(ns("resetbutton"), 
-                                              icon = icon("fas fa-redo-alt"),
-                                              label = HTML("&nbsp;RESET"), 
-                                              width = "120px")
-                        ),
-                        hr(),
-                        h4("OBTAIN DATA", style = "padding-top: 50px;"),
-                        fluidRow(width = 12, id = "actionbuttonrow2",
-                                 ## downloads data to user's computer
-                                 shinyjs::disabled(downloadButton(ns("savebutton"), 
-                                                         label = "GET DATA")),
-                                 ## add QC plots to report
-                                 actionButton(ns("reportButton"), 
-                                              label = HTML("<i class='far fa-bookmark'></i>&nbsp;&nbsp;REPORT"), 
-                                              width = "120px")
-                        )
-           ))
+    column(
+      width = 4, id = ns("datauploadcol"),
+      h4("UPLOAD DATA", style = "padding-top: 45px;"),
+      fileUploadUI(ns("fileupload")),
+      hr(),
+      shinyjs::disabled(div(
+        id = ns("filterdiv"),
+        h4("FILTER DATA", style = "padding-top: 20px;"),
+        h5("Features", style = "padding-top:0;"),
+        sliderInput(
+          ns("featuresams"),
+          label = "Minimum Sample Presence",
+          value = 1, min = 1, max = 1000, 
+          round = TRUE, width = "250px"),
+        h5("Samples"),
+        sliderInput(
+          ns("minfeats"),
+          label = "Minimum Number of Features",
+          value = 2, min = 2, max = 1000, 
+          round = TRUE, width = "250px"),
+        sliderInput(
+          ns("minreads"),
+          label = "Minimum Number of Reads",
+          value = 2, min = 2, max = 1000, 
+          round = TRUE, width = "250px"),
+        box(
+          collapsible = TRUE, collapsed = TRUE, width = 10,
+          style = "padding:0; margin-top: -40px;",
+          numericInput(
+            ns("readnum"),
+            label = "Set min #reads",
+            value = 2, min = 2,
+            width = "100px")
+        )
+      )),
+      shinyjs::disabled(
+        div(
+          id = ns("phenodiv"), style = "margin-top: 100px",
+          h5("Phenotypes", 
+             style = "padding-top:0; margin-top: -11px;"),
+          selectizeInput(
+            ns("removepheno"),
+            label = "Remove Phenotypes",
+            choices = "", 
+            multiple = FALSE, 
+            options = list(placeholder = 
+                             "Select Phenotype"), 
+            width = "250px")
+        )),
+      shinyjs::disabled(
+        div(
+          id = ns("buttondiv"),
+          fluidRow(
+            width = 12, id = "actionbuttonrow2",
+            ## filter updates meData for further analysis
+            actionButton(
+              ns("filterbutton"), 
+              icon = icon("fas fa-filter"),
+              label = HTML("&nbsp;FILTER"), 
+              width = "120px"),
+            ## resets back to original data 
+            actionButton(
+              ns("resetbutton"), 
+              icon = icon("fas fa-redo-alt"),
+              label = HTML("&nbsp;RESET"), 
+              width = "120px")
+          ),
+          hr(),
+          h4("OBTAIN DATA", style = "padding-top: 50px;"),
+          fluidRow(
+            width = 12, id = "actionbuttonrow2",
+            ## downloads data to user's computer
+            shinyjs::disabled(
+              downloadButton(
+                ns("savebutton"), 
+                label = "GET DATA")),
+            ## add QC plots to report
+            actionButton(
+              ns("reportButton"), 
+              label = HTML("<i class='far fa-bookmark'></i>&nbsp;&nbsp;REPORT"), 
+              width = "120px")
+          )
+        ))
     ),
-    column(width = 8,
-           uiOutput(ns("projecthead")),
-           fluidRow(width = 10, id = "histogramrow",
-                    column(width = 5,
-                           plotly::plotlyOutput(ns("featpres"), 
-                                                width = "200px", 
-                                                height = "200px")
-                    ),
-                    column(width = 5,
-                           plotly::plotlyOutput(ns("libsize"), 
-                                                width = "200px", 
-                                                height = "200px")
-                    )
-           ),
-           shinycssloaders::withSpinner(plotly::plotlyOutput(ns("dataqcplot"), 
-                                            width = "675px", 
-                                            height = "550px"),
-                       type = 3, color = "#424242", 
-                       color.background = "#fdfdfc"),
-           uiOutput(ns("plotoptions")),
-           fluidRow(width = 12, id = "sampleoturow",
-                    plotly::plotlyOutput(ns("sampleotus"), 
-                                         width = "650px", 
-                                         height = "400px")
-           ),
-           uiOutput(ns("samplebaroptions"))
+    column(
+      width = 8,
+      uiOutput(ns("projecthead")),
+      fluidRow(
+        width = 10, id = "histogramrow",
+        column(
+          width = 5,
+          plotly::plotlyOutput(
+            ns("featpres"), 
+            width = "200px", 
+            height = "200px")
+        ),
+        column(
+          width = 5,
+          plotly::plotlyOutput(
+            ns("libsize"), 
+            width = "200px", 
+            height = "200px")
+        )
+      ),
+      shinycssloaders::withSpinner(
+        plotly::plotlyOutput(
+          ns("dataqcplot"), 
+          width = "675px", 
+          height = "550px"),
+        type = 3, color = "#424242", 
+        color.background = "#fdfdfc"),
+      uiOutput(ns("plotoptions")),
+      fluidRow(
+        width = 12, id = "sampleoturow",
+        plotly::plotlyOutput(
+          ns("sampleotus"), 
+          width = "650px", 
+          height = "400px")
+      ),
+      uiOutput(ns("samplebaroptions"))
     )
   )
 }
@@ -340,9 +377,9 @@ getFilterChoices <- function(MRobj) {
   if("SAMPLE_ID" %in% names(allchoices)){
     allchoices[["SAMPLE_ID"]] <- pData(MRobj)[["SAMPLE_ID"]]
   }
-  allchoices <- allchoices[sapply(allchoices, function(a) {
+  allchoices <- allchoices[vapply(allchoices, function(a) {
     !is.null(a)
-  })]
+  }, logical(1))]
   return(allchoices)
 }
 
@@ -368,8 +405,6 @@ getFilterChoices <- function(MRobj) {
 #' @importFrom Biobase pData
 #' @import shiny
 #' @import shinydashboard
-#'
-#' @export
 dataInput <- function(input, output, session, 
                       dataSource, dataFilterRep, qcRep,
                       addPheno, resetReports) {
@@ -416,9 +451,9 @@ dataInput <- function(input, output, session,
       shapeOptions(NULL)
       facetOptions(NULL)
     } else {
-      shapeIndices <- sapply(filterNames, function(n){
+      shapeIndices <- vapply(filterNames, function(n){
         length(unique(pData(meData())[,n])) <= getOption("me.shapenum")
-      })
+      }, logical(1))
       if(length(shapeIndices) > 0){
         sO <- filterNames[shapeIndices]
         if(any(!(sO %in% shapeOptions())) |
@@ -426,9 +461,9 @@ dataInput <- function(input, output, session,
           shapeOptions(sO)
         }
       }
-      facetIndices <- sapply(filterNames, function(n){
+      facetIndices <- vapply(filterNames, function(n){
         length(unique(pData(meData())[,n])) <= getOption("me.facetnum")
-      })
+      }, logical(1))
       if(length(facetIndices) > 0){
         fO <- filterNames[facetIndices]
         if(any(!(fO %in% facetOptions())) | 
@@ -627,9 +662,9 @@ dataInput <- function(input, output, session,
     remainingFilters(filterChoices()[!names(filterChoices()) %in% 
                                        selectedChoices()])
     updateSelectizeInput(session, "removepheno", 
-                      choices = c(names(remainingFilters())), 
-                      selected = "",
-                      options = list(placeholder = "Select Phenotype"))
+                         choices = c(names(remainingFilters())), 
+                         selected = "",
+                         options = list(placeholder = "Select Phenotype"))
   })
   
   ## observes remove button clicks handled via javascript in UI
@@ -718,11 +753,12 @@ dataInput <- function(input, output, session,
                               min = input$minfeats)
             updateSliderInput(session, "minreads", 
                               min = input$minreads)
-            dataFilterRep(paste0(dataFilterRep(),
-                                 "\nmeData <- filterMEData(meData,minpresence = ", 
-                                 featureSams(),
-                                 ", minfeats = ", minf, ", minreads = ", 
-                                 minr, ")"))
+            dataFilterRep(
+              paste0(dataFilterRep(),
+                     "\nmeData <- filterMEData(meData,minpresence = ", 
+                     featureSams(),
+                     ", minfeats = ", minf, ", minreads = ", 
+                     minr, ")"))
           }
         }
         ## FILTER ON PHENOTABLE
@@ -740,11 +776,12 @@ dataInput <- function(input, output, session,
                                            input$parsedFilters)
           bufData <- filterByPheno(meData(), phenovalstoremove)
           if (nrow(pData(bufData)) == 0) {
-            showModal(modalDialog(
-              title = "Error filtering data",
-              "No data remains when applying phenotype filters. Please revise ...",
-              easyClose = TRUE
-            ))
+            showModal(
+              modalDialog(
+                title = "Error filtering data",
+                "No data remains when applying phenotype filters. Please revise ...",
+                easyClose = TRUE
+              ))
           } else {
             removeUI(".phenoremoverow", multiple = TRUE, 
                      immediate = TRUE)
@@ -853,29 +890,29 @@ dataInput <- function(input, output, session,
       )
     } else{
       div(id = "datahelp",
-        h2("Data input"),
-        div(
-          h5("Microbiome Explorer accepts several different data upload formats:"),
-          tags$li("MRexperiment-class objects stored as RDATA or RDS files"),
-          tags$li("The Biological Observation Matrix (BIOM) formatted files"),
-          tags$li("Raw counts files"),
-          p(""),
-          p("A ",strong("counts"), " file is required and can be uploaded in delimited form (csv, tsv). The required format
+          h2("Data input"),
+          div(
+            h5("Microbiome Explorer accepts several different data upload formats:"),
+            tags$li("MRexperiment-class objects stored as RDATA or RDS files"),
+            tags$li("The Biological Observation Matrix (BIOM) formatted files"),
+            tags$li("Raw counts files"),
+            p(""),
+            p("A ",strong("counts"), " file is required and can be uploaded in delimited form (csv, tsv). The required format
              is such that each ",strong("sample is a column"), " and each unique ",strong("feature is a row"), " in the data set.
             The counts matrix should have no row names and store the information on the features/OTUs in its first columns. 
             All other columns names should correspond to sample names."),
-          p("A tabular ", strong("phenotype"), "file can be linked to the counts data. Each ", strong("sample is a row"),
-            "with the names of the rows in the phenotype data corresponding to the names of the columns in the count
+            p("A tabular ", strong("phenotype"), "file can be linked to the counts data. Each ", strong("sample is a row"),
+              "with the names of the rows in the phenotype data corresponding to the names of the columns in the count
             data. Appending several phenotype files by subsequent uploads is possible.
             If no phenotype file is given, the names of the columns of the count data are
             used as the phenotype data."),
-          p("A ", strong("feature"), " data file must be provided if aggregation to a particular phylogenetic level is desired.
+            p("A ", strong("feature"), " data file must be provided if aggregation to a particular phylogenetic level is desired.
             Each unique ",strong("feature is a row"), " which must correspond to the ones in the counts data.
             Each column is a taxonomy level.
             If the feature data file is omitted, analysis can only be done at the raw counts level."),
-         p("An MRexperiment-class object from metagenomeSeq already combines these different data files into one data structure based on 
+            p("An MRexperiment-class object from metagenomeSeq already combines these different data files into one data structure based on 
            an extended eSet-class.") 
-        )
+          )
       )
     }
   })
@@ -884,7 +921,7 @@ dataInput <- function(input, output, session,
   output$plotoptions <- renderUI({
     req(plotData())
     selection <- isolate('if'(colorChoice() != "", 
-                                colorChoice(), "No Color"))
+                              colorChoice(), "No Color"))
     shinyWidgets::dropdownButton(
       tags$h3("Plot Options"),
       selectInput(
@@ -922,19 +959,19 @@ dataInput <- function(input, output, session,
       label = "Plot Options"
     )
   })
-
+  
   ## adjust color of plot
   observeEvent(input$qc_color, {
     colorChoice(input$qc_color)
     updateSliderInput(session, "minreads",
                       value = input$minreads - 1)
   }, ignoreInit = TRUE)
-
+  
   ## store qc code in reactive Value
   observeEvent(input$reportButton, {
     qcRep(qcCode())
   })
-
+  
   ## update plot based on min features or min reads
   observeEvent(c(input$minfeats, input$minreads), {
     req(plotData(), input$minfeats, input$minreads)
@@ -959,7 +996,7 @@ dataInput <- function(input, output, session,
         readalpha <- 1
         readalphafill <- 0.2
       }
-
+      
       plotly::plotlyProxy("dataqcplot", session) %>%
         plotly::plotlyProxyInvoke("deleteTraces", 0)
       plotly::plotlyProxy("dataqcplot", session) %>%
@@ -981,7 +1018,7 @@ dataInput <- function(input, output, session,
           ),
           0
         )
-
+      
       plotly::plotlyProxy("dataqcplot", session) %>%
         plotly::plotlyProxyInvoke("deleteTraces", 1)
       plotly::plotlyProxy("dataqcplot", session) %>%
@@ -1025,8 +1062,8 @@ dataInput <- function(input, output, session,
         list(width = input$barWidth)
       )
   })
-
-
+  
+  
   ## render the QC plot
   output$dataqcplot <- plotly::renderPlotly({
     req(plotData())
@@ -1056,17 +1093,18 @@ dataInput <- function(input, output, session,
       paste0("\n"),            
       paste0("", "#+ qcsample, fig.width = 7"),
       paste0("plotlySampleBarplot(meData,"),
-      paste0("\tplotTitle = \"Unique features per sample\","),
       paste0("\tcol_by = \"",input$bar_color, "\","),
       paste0("\tpwidth = 600,"),
       paste0("\tsortbyfreq = ",input$sortbyfreq, ","),
       paste0("\tpheno_sort = ",
-             'if'(is.null(sortPheno()),"NULL",paste0("\"",sortPheno(),"\"")), ","),
+             'if'(is.null(sortPheno()),"NULL",
+                  paste0("\"",sortPheno(),"\"")), ","),
       paste0("\tx_levels = ",
-             'if'(is.null(phenoValues()),"NULL",paste0("c(", paste0("\"",
-                                       phenoValues(), 
-                                       "\"",
-                                       collapse = ","),")")),
+             'if'(is.null(phenoValues()),"NULL",
+                  paste0("c(", paste0("\"",
+                                      phenoValues(), 
+                                      "\"",
+                                      collapse = ","),")")),
              ")\n"),
       paste0("#'", ""),
       paste0(""),
@@ -1085,13 +1123,13 @@ dataInput <- function(input, output, session,
       paste0(""),
       sep = "\n"))
     
-
+    
     microbiomeExplorer::makeQCPlot(plotData(),
-           col_by = colorChoice(),
-           log = logChoice(),
-           filter_feat = minf,
-           filter_read = minr,
-           pwidth = isolate(input$plotWidth))
+                                   col_by = colorChoice(),
+                                   log = logChoice(),
+                                   filter_feat = minf,
+                                   filter_read = minr,
+                                   pwidth = isolate(input$plotWidth))
     
   })
   
@@ -1108,7 +1146,7 @@ dataInput <- function(input, output, session,
       )
     }
   })
-
+  
   ## renders library size histogram; updates with meData
   output$libsize <- plotly::renderPlotly({
     req(plotData())
@@ -1121,7 +1159,7 @@ dataInput <- function(input, output, session,
       )
     }
   })
-
+  
   ## render plot options
   output$samplebaroptions <- renderUI({
     req(plotData())
@@ -1186,15 +1224,15 @@ dataInput <- function(input, output, session,
   
   output$sampleotus <- plotly::renderPlotly({
     req(plotData())
-
+    
     if(nrow(plotData()) > 0){
-      microbiomeExplorer::plotlySampleBarplot(plotData(),
-                                              plotTitle = "Unique features per sample",
-                                              col_by = input$bar_color,
-                                              pwidth = 600,
-                                              sortbyfreq = input$sortbyfreq,
-                                              pheno_sort = sortPheno(),
-                                              x_levels = phenoValues())
+      microbiomeExplorer::plotlySampleBarplot(
+        plotData(),
+        col_by = input$bar_color,
+        pwidth = 600,
+        sortbyfreq = input$sortbyfreq,
+        pheno_sort = sortPheno(),
+        x_levels = phenoValues())
     }
   })
   
@@ -1219,7 +1257,8 @@ dataInput <- function(input, output, session,
   })
   
   observeEvent(input$sort_pheno,{
-    updateSelectizeInput(session,"pheno_values", choices = unique(plotData()[[input$sort_pheno]]))
+    updateSelectizeInput(session,"pheno_values", 
+                         choices = unique(plotData()[[input$sort_pheno]]))
   }, ignoreNULL = TRUE)
   
   observeEvent(input$changeFactorOrder,{
@@ -1235,7 +1274,7 @@ dataInput <- function(input, output, session,
       shinyWidgets::updateSwitchInput(session, "sortbyfreq", value = FALSE)
     }
   })
-
+  
   ## download modified data as RDS
   output$savebutton <- downloadHandler(
     filename = function() {

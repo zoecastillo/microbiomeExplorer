@@ -41,6 +41,11 @@ the plotly QC plot
 This function makes a scatterplot of read and feature counts
 for each sample. It was adjusted based on original work by Mo Huang
 }
+\examples{
+data("mouseData", package = "metagenomeSeq")
+makeQCPlot(mouseData)
+
+}
 \author{
 Janina Reeder
 }

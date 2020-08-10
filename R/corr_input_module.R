@@ -8,8 +8,6 @@
 #' @author Janina Reeder
 #'
 #' @return box containing ui element
-#' 
-#' @export
 corrInputUI <- function(id, type) {
   ns <- NS(id)
   
@@ -17,49 +15,59 @@ corrInputUI <- function(id, type) {
       h4("ANALYSIS PARAMETERS"),
       div(
         h5('if'(type == "feature", 
-                  "Feature vs Feature",
-                  "Feature vs Phenotype")),
-        selectizeInput(ns("featurecorr1"),
-                       label = "Feature correlation (base)", choices = "", 
-                       multiple = FALSE, width = "250px"
+                "Feature vs Feature",
+                "Feature vs Phenotype")),
+        selectizeInput(
+          ns("featurecorr1"),
+          label = "Feature correlation (base)", choices = "", 
+          multiple = FALSE, width = "250px"
         ),
         if(type == "feature") {
-          selectizeInput(ns("featurecorr2"),
-                         label = "Feature correlation 2", choices = "", 
-                         multiple = FALSE, width = "250px"
+          selectizeInput(
+            ns("featurecorr2"),
+            label = "Feature correlation 2", choices = "", 
+            multiple = FALSE, width = "250px"
           )
         } else {
-          selectInput(ns("phenoselect"),
-                      label = "Phenotype correlation", choices = "", 
-                      multiple = FALSE, selectize = TRUE, width = "250px"
+          selectInput(
+            ns("phenoselect"),
+            label = "Phenotype correlation", choices = "", 
+            multiple = FALSE, selectize = TRUE, width = "250px"
           )
         }
       ),
       div(
-        selectInput(ns("facetby"),
-                    label = "Facet columns by", choices = "", multiple = FALSE, 
-                    selectize = FALSE, width = "250px"
+        selectInput(
+          ns("facetby"),
+          label = "Facet columns by", choices = "", multiple = FALSE, 
+          selectize = FALSE, width = "250px"
         ),
-        selectInput(ns("facetby2"),
-                    label = "Facet rows by", choices = "", multiple = FALSE, 
-                    selectize = FALSE, width = "250px"
+        selectInput(
+          ns("facetby2"),
+          label = "Facet rows by", choices = "", multiple = FALSE, 
+          selectize = FALSE, width = "250px"
         )
       ),
-      selectInput(ns("method"),
-                  label = "Method", choices = getOption("me.corrmethods"), multiple = FALSE, 
-                  selectize = FALSE, width = "250px"
+      selectInput(
+        ns("method"),
+        label = "Method", choices = getOption("me.corrmethods"), 
+        multiple = FALSE, 
+        selectize = FALSE, width = "250px"
       ),
       ## buttons are used to submit events. This ensures plots are not redrawn 
       ## while user still adjusts parameters
       div(id = ns("buttondiv"),
-          fluidRow( width = 12, id = "actionbuttonrow",
-                    ## update analysis outputs (plots/tables)
-                    actionButton(ns("updatebutton"), 
-                                 icon = icon("far fa-chart-bar"),
-                                 label = HTML("&nbsp;UPDATE"), width = "120px"),
-                    actionButton(ns("reportButton"), 
-                                 label = HTML("<i class='far fa-bookmark'></i>&nbsp;&nbsp;REPORT"), 
-                                 width = "120px")
+          fluidRow( 
+            width = 12, id = "actionbuttonrow",
+            ## update analysis outputs (plots/tables)
+            actionButton(
+              ns("updatebutton"), 
+              icon = icon("far fa-chart-bar"),
+              label = HTML("&nbsp;UPDATE"), width = "120px"),
+            actionButton(
+              ns("reportButton"), 
+              label = HTML("<i class='far fa-bookmark'></i>&nbsp;&nbsp;REPORT"), 
+              width = "120px")
           )
       )
   )
@@ -83,18 +91,16 @@ corrInputUI <- function(id, type) {
 #' @importFrom Biobase pData fData
 #'
 #' @return list holding all chosen values and the selected feature
-#' 
-#' @export
 corrInput <- function(input, output, session, type,
-                          meData, facetOptions = NULL,
-                          reset, aggDat = reactive(NULL)) {
+                      meData, facetOptions = NULL,
+                      reset, aggDat = reactive(NULL)) {
   ns <- session$ns
   
   ## reactive value storing choices made in the UI
   chosenValues <- reactiveVal(NULL)
   ## reactive storing sorted features at given level
   aggFeatures <- reactiveVal(NULL)
-
+  
   observe({
     req(aggDat())
     aggFeatures(rownames(MRcounts(aggDat())))
@@ -118,8 +124,8 @@ corrInput <- function(input, output, session, type,
   observe({
     req(meData())
     if(!is.null(chosenValues()$method))
-        updateSelectInput(session, "method", 
-                          selected = chosenValues()$method)
+      updateSelectInput(session, "method", 
+                        selected = chosenValues()$method)
     updateSelectInput(session, "facetby", 
                       choices = c("", facetOptions()), 
                       selected = chosenValues()$facetby)
@@ -229,6 +235,6 @@ corrInput <- function(input, output, session, type,
     }
     chosenValues(cV)
   })
-
+  
   return(chosenValues)
 }

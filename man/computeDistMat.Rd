@@ -21,3 +21,9 @@ distance as dist
 \description{
 Function to compute the distance matrix using vegdist from the vegan package
 }
+\examples{
+data("mouseData", package = "metagenomeSeq")
+aggdat <- aggFeatures(mouseData, level = "genus")
+computeDistMat(aggdat, dist_method = "bray")
+
+}

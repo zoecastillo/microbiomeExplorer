@@ -6,7 +6,6 @@
 \usage{
 plotlySampleBarplot(
   MRobj,
-  plotTitle,
   col_by = NULL,
   xaxisTitle = "",
   yaxisTitle = "",
@@ -20,8 +19,6 @@ plotlySampleBarplot(
 \arguments{
 \item{MRobj}{containing data to plot}
 
-\item{plotTitle}{title of the plot}
-
 \item{col_by}{phenotype to color bars by; default is NULL}
 
 \item{xaxisTitle}{name of xaxis; default is ""}
@@ -32,9 +29,11 @@ plotlySampleBarplot(
 
 \item{pheight}{overall plot height; default is 450}
 
-\item{sortbyfreq}{boolean determining if bars should be sorted by frequency; default is FALSE}
+\item{sortbyfreq}{boolean determining if bars should be sorted by frequency; 
+default is FALSE}
 
-\item{pheno_sort}{order of pheno levels to sort by; ignored if sortbyfreq is TRUE}
+\item{pheno_sort}{order of pheno levels to sort by; 
+ignored if sortbyfreq is TRUE}
 
 \item{x_levels}{character vector holding x values in order to be shown}
 }
@@ -43,4 +42,9 @@ plotly plot object
 }
 \description{
 Function plotting a barplot showing number of OTUs per samples
+}
+\examples{
+data("mouseData", package = "metagenomeSeq")
+plotlySampleBarplot(mouseData)
+
 }

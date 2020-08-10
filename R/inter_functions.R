@@ -9,6 +9,12 @@
 #' @param nfeatures number of features to use; default is all
 #'
 #' @return distance as dist
+#' 
+#' @examples 
+#' data("mouseData", package = "metagenomeSeq")
+#' aggdat <- aggFeatures(mouseData, level = "genus")
+#' computeDistMat(aggdat, dist_method = "bray")
+#' 
 #' @export
 computeDistMat <- function(aggdat, dist_method, 
                            log = TRUE, nfeatures = nrow(aggmat)){
@@ -30,6 +36,13 @@ computeDistMat <- function(aggdat, dist_method,
 #' @param pcas 2-element vector of PCAs to include in results
 #'
 #' @return the x slot limited to pcas after calling stats::prcomp on distmat
+#' 
+#' @examples 
+#' data("mouseData", package = "metagenomeSeq")
+#' aggdat <- aggFeatures(mouseData, level = "genus")
+#' distmat <- computeDistMat(aggdat, dist_method = "bray")
+#' calculatePCAs(distmat, c(1,2))
+#' 
 #' @export
 calculatePCAs <- function(distmat, pcas){
   pcaRes <- stats::prcomp(distmat)
@@ -44,7 +57,7 @@ calculatePCAs <- function(distmat, pcas){
 #' @param aggdat aggregated MRExperiment
 #' @param dim Vector of length 2 specifying which dimensions to plot.
 #' @param log Log2 transform data. Default is TRUE.
-#' @param dist_method Which distance method to use. See ?vegan::vegdist for details
+#' @param dist_method Which distance method to use. See ?vegan::vegdist for more
 #' \code{\link[vegan]{vegdist}()} for options. Default is "bray".
 #' @param pcas precalculated pcas to avoid recalculation via CalcPCs
 #' @param nfeatures Number of top features in terms of standard deviation.
@@ -59,7 +72,7 @@ calculatePCAs <- function(distmat, pcas){
 #' @param pt_size the size of the markers
 #' @param plotText adonis text to be added to plot
 #' @param confInterval numeric value indicating confidence level for ellipses
-#' @param allowWebGL boolean indicating if WebGL should be used for large dataadded
+#' @param allowWebGL boolean indicating if WebGL should be used 
 #' @param pwidth overall plot width; default is 550 (125 are added for legend)
 #' @param pheight overall plot height; default is 550
 #' 
@@ -67,9 +80,14 @@ calculatePCAs <- function(distmat, pcas){
 #' @importFrom Biobase pData
 #'
 #' @return plotly plot object
+#' 
+#' @examples
+#' data("mouseData", package = "metagenomeSeq")
+#' aggdat <- aggFeatures(mouseData, level = "genus")
+#' plotBeta(aggdat)
 #'
 #' @export
-plotBeta <- function(aggdat, dim = 1:2,
+plotBeta <- function(aggdat, dim = c(1,2),
                      log = TRUE, dist_method = "bray", pcas = NULL,
                      nfeatures = nrow(aggdat), col_by = NULL, shape_by = NULL,
                      plotTitle = "", xlab = NULL, ylab = NULL, pt_size = 8,
@@ -108,20 +126,21 @@ plotBeta <- function(aggdat, dim = 1:2,
       ellipseData <- ellipseData[ellipseData[[col_by]] %in% dup,]
       ## dataEllipse requires a plot even if draw = FALSE
       graphics::plot.new()
-      testellipses <- car::dataEllipse(x = ellipseData[,dim[1]],
-                                       y = ellipseData[,dim[2]],
-                                       groups = factor(ellipseData[[col_by]]),
-                                       draw = FALSE, 
-                                       levels = confInterval,
-                                       col = getOption("me.colorvalues")[seq(1, length(levels(elligroup)))])
+      testellipses <- car::dataEllipse(
+        x = ellipseData[,dim[1]],
+        y = ellipseData[,dim[2]],
+        groups = factor(ellipseData[[col_by]]),
+        draw = FALSE, 
+        levels = confInterval,
+        col = getOption("me.colorvalues")[seq(1, length(levels(elligroup)))])
       grDevices::dev.off()
-      keepindices <- sapply(levels(elligroup), function(c){
+      keepindices <- vapply(levels(elligroup), function(c){
         subEllipse <- ellipseData[ellipseData[[col_by]] == c,]
-        if(sum(abs(stats::cor(subEllipse[,1:2]))) == 4){
+        if(sum(abs(stats::cor(subEllipse[,c(1,2)]))) == 4){
           return(FALSE)
         }
         return(TRUE)
-      })
+      }, logical(1))
       testellipses <- testellipses[keepindices]
     }
     
@@ -188,17 +207,19 @@ plotBeta <- function(aggdat, dim = 1:2,
   plot_xlab <- 'if'(is.null(xlab), colnames(pcas)[1], xlab)
   plot_ylab <- 'if'(is.null(ylab), colnames(pcas)[2], ylab)
   
-  p <- plotly::plot_ly(plotdata, hoverinfo = "text", 
-                       height = pheight, width = pwidth,
-                       colors = 
-                         getOption("me.colorvalues")[seq(1, length(levels(colgroup)))]) 
+  p <- plotly::plot_ly(
+    plotdata, hoverinfo = "text", 
+    height = pheight, width = pwidth,
+    colors = 
+      getOption("me.colorvalues")[seq(1,length(levels(colgroup)))]) 
   if(!is.null(testellipses)){
     res <- lapply(seq(1,length(testellipses)), function(t){
-      p <<- p %>% plotly::add_polygons(x = testellipses[[t]][,1], 
-                                       y = testellipses[[t]][,2],
-                                       fillcolor = 'transparent',
-                                       name = names(testellipses)[[t]],
-                                       line = list(color = getOption("me.colorvalues")[t]))
+      p <<- p %>% plotly::add_polygons(
+        x = testellipses[[t]][,1], 
+        y = testellipses[[t]][,2],
+        fillcolor = 'transparent',
+        name = names(testellipses)[[t]],
+        line = list(color = getOption("me.colorvalues")[t]))
     })
   }
   p <- p %>%
@@ -259,6 +280,12 @@ plotBeta <- function(aggdat, dim = 1:2,
 #' @importFrom Biobase pData
 #'
 #' @return plotly heatmap
+#' 
+#' @examples
+#' data("mouseData", package = "metagenomeSeq")
+#' aggdat <- aggFeatures(mouseData, level = "genus")
+#' plotHeatmap(aggdat, sort_by = "Fano")
+#' 
 #' @export
 plotHeatmap <- function(aggdat, features = NULL,
                         log = TRUE, sort_by = c("Fano", "MAD", "Variance"),
@@ -313,7 +340,8 @@ plotHeatmap <- function(aggdat, features = NULL,
   
   aggmat <- round(aggmat, digits = getOption("me.round_digits"))
   
-  pal <- grDevices::colorRampPalette(rev(RColorBrewer::brewer.pal(11, "RdYlBu")))
+  pal <- grDevices::colorRampPalette(
+    rev(RColorBrewer::brewer.pal(11, "RdYlBu")))
   colvalues <- pal(100)
   minval <- min(aggmat)
   maxval <- max(aggmat)
@@ -413,7 +441,7 @@ plotHeatmap <- function(aggdat, features = NULL,
         )),
       margin = list(l = 75, b = 75, t = 75, r = 50),
       showlegend = FALSE) %>%
-  add_plotly_config()
+    add_plotly_config()
   
   return(hm)
 }

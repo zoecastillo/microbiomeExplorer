@@ -6,7 +6,7 @@
 \usage{
 plotBeta(
   aggdat,
-  dim = 1:2,
+  dim = c(1, 2),
   log = TRUE,
   dist_method = "bray",
   pcas = NULL,
@@ -31,7 +31,7 @@ plotBeta(
 
 \item{log}{Log2 transform data. Default is TRUE.}
 
-\item{dist_method}{Which distance method to use. See ?vegan::vegdist for details
+\item{dist_method}{Which distance method to use. See ?vegan::vegdist for more
 \code{\link[vegan]{vegdist}()} for options. Default is "bray".}
 
 \item{pcas}{precalculated pcas to avoid recalculation via CalcPCs}
@@ -57,7 +57,7 @@ explained.}
 
 \item{confInterval}{numeric value indicating confidence level for ellipses}
 
-\item{allowWebGL}{boolean indicating if WebGL should be used for large dataadded}
+\item{allowWebGL}{boolean indicating if WebGL should be used}
 
 \item{pwidth}{overall plot width; default is 550 (125 are added for legend)}
 
@@ -68,4 +68,10 @@ plotly plot object
 }
 \description{
 This functions plots the beta diversity as a PCoA plot.
+}
+\examples{
+data("mouseData", package = "metagenomeSeq")
+aggdat <- aggFeatures(mouseData, level = "genus")
+plotBeta(aggdat)
+
 }

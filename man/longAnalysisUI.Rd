@@ -15,6 +15,10 @@ fluidRow containing the ui code
 \description{
 Long Analysis Module - UI
 }
+\examples{
+longAnalysisUI("longanalysis_id")
+
+}
 \author{
 Janina Reeder
 }

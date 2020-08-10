@@ -9,6 +9,8 @@
 #'
 #' @return fluidRow containing the ui code
 #' 
+#' @examples corrAnalysisUI("coranalysis_id")
+#' 
 #' @export
 corrAnalysisUI <- function(id) {
   ns <- NS(id)
@@ -48,8 +50,6 @@ corrAnalysisUI <- function(id) {
 #' @param aggData the aggregated MRExperiment object
 #'
 #' @return reactive holding code to be used in reports
-#' 
-#' @export
 corrAnalysis <- function(input, output, session, data, levelOpts,
                           chosenLevel, resetInput, aggData) {
   ## corr SAMPLE ANALYSIS

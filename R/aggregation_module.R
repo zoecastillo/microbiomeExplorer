@@ -7,10 +7,12 @@
 #' 
 #' @return box holding aggregation input elements
 #' 
+#' @examples aggregationTabUI("atu_id")
+#' 
 #' @export
 aggregationTabUI <- function(id) {
     ns <- NS(id)
-
+    
     box(
         id = ns("aggregation_box"),
         style = "padding-top: 0; padding-left: 20px;",
@@ -20,46 +22,54 @@ aggregationTabUI <- function(id) {
         collapsed = FALSE,
         
         
-        fluidRow(width = 12, 
-                 shinyjs::disabled(
-                     div(id = ns("normaggdiv"),
-                         column(
-                             width = 3,
-                             selectInput(ns("normalizedata"),
-                                         label = "Normalize Data",
-                                         choices = c("Proportion", "CSS", "Do not normalize"),
-                                         multiple = FALSE, 
-                                         selectize = FALSE,
-                                         width = "150px")
-                         ),
-                         column(
-                             width = 3,
-                             selectInput(ns("featurelevel"),
-                                         label = "Feature level", 
-                                         choices = "",
-                                         multiple = FALSE, 
-                                         selectize = FALSE, 
-                                         width = "250px"
-                             )
-                         ),
-                         column(
-                             width = 2,
-                             div(style = "margin-top: 24px;",
-                                 actionButton(ns("aggregatebutton"), 
-                                              icon = icon("fas fa-compress"),
-                                              label = HTML("&nbsp;AGGREGATE"),
-                                              width = "120px"))
-                         ),
-                         column(
-                             width = 2,
-                             div(style = "margin-top: 24px;",
-                                 shinyjs::disabled(downloadButton(ns("savebutton"),
-                                                                  label = "GET DATA",
-                                                                  width = "120px"))
-                             )
-                         )
-                     )
-                 )
+        fluidRow(
+            width = 12,
+            shinyjs::disabled(
+                div(
+                    id = ns("normaggdiv"),
+                    column(
+                        width = 3,
+                        selectInput(
+                            ns("normalizedata"),
+                            label = "Normalize Data",
+                            choices = c("Proportion", "CSS", 
+                                        "Do not normalize"),
+                            multiple = FALSE, 
+                            selectize = FALSE,
+                            width = "150px")
+                    ),
+                    column(
+                        width = 3,
+                        selectInput(
+                            ns("featurelevel"),
+                            label = "Feature level", 
+                            choices = "",
+                            multiple = FALSE, 
+                            selectize = FALSE, 
+                            width = "250px"
+                        )
+                    ),
+                    column(
+                        width = 2,
+                        div(style = "margin-top: 24px;",
+                            actionButton(
+                                ns("aggregatebutton"), 
+                                icon = icon("fas fa-compress"),
+                                label = HTML("&nbsp;AGGREGATE"),
+                                width = "120px"))
+                    ),
+                    column(
+                        width = 2,
+                        div(style = "margin-top: 24px;",
+                            shinyjs::disabled(
+                                downloadButton(
+                                    ns("savebutton"),
+                                    label = "GET DATA",
+                                    width = "120px"))
+                        )
+                    )
+                )
+            )
         )    
     )
 }
@@ -76,11 +86,12 @@ aggregationTabUI <- function(id) {
 #' 
 #' @author Janina Reeder
 #' 
-#' @return reactive list holding aggregated object, aggregation code and boolean on normalization
-#' 
-#' @export
-aggregationTab <- function(input, output, session, 
-                           resetInput, levelOpts, chosenLevel, meData) {
+#' @return reactive list holding aggregated object, aggregation code and 
+#' boolean on normalization
+aggregationTab <- function(
+    input, output, session, 
+    resetInput, levelOpts, chosenLevel, meData) {
+    
     ns <- session$ns
     
     aggCode <- reactiveVal(NULL)
@@ -88,27 +99,28 @@ aggregationTab <- function(input, output, session,
     normalizedData <- reactiveVal(FALSE)
     normUpdate <- reactiveVal(FALSE)
     
-    observeEvent(meData(),{
-        if(isFALSE(normUpdate())){
-            if(is.null(fData(meData()))){
-                shinyjs::disable("normaggdiv")
+    observeEvent(
+        meData(),{
+            if(isFALSE(normUpdate())){
+                if(is.null(fData(meData()))){
+                    shinyjs::disable("normaggdiv")
+                } else {
+                    shinyjs::enable("normaggdiv")
+                }
+                aggCode(NULL)
+                aggMRobj(NULL)
+                normalizedData(FALSE)
             } else {
-                shinyjs::enable("normaggdiv")
+                normUpdate(FALSE)
             }
-            aggCode(NULL)
-            aggMRobj(NULL)
-            normalizedData(FALSE)
-        } else {
-            normUpdate(FALSE)
-        }
-    }, ignoreNULL = TRUE)
+        }, ignoreNULL = TRUE)
     
     observeEvent(levelOpts(),{
         updateSelectInput(session, "featurelevel", 
                           choices = levelOpts(), 
                           selected = chosenLevel())
     })
-
+    
     
     observeEvent(input$aggregatebutton, {
         req(meData())
@@ -117,7 +129,7 @@ aggregationTab <- function(input, output, session,
             normUpdate(TRUE)
             meData(normalizeData(meData(), norm_method = input$normalizedata))
             aggC <- paste0("\nmeData <- normalizeData(meData, norm_method = \"",
-                                 input$normalizedata, "\")")
+                           input$normalizedata, "\")")
             normalizedData(TRUE)
         } else if(all(is.na(normFactors(meData())))){
             normalizedData(FALSE)
@@ -126,8 +138,10 @@ aggregationTab <- function(input, output, session,
         }
         aggMRobj(aggFeatures(meData(), level = input$featurelevel))
         chosenLevel(input$featurelevel)
-        aggCode(paste0(aggC,"\naggDat <- aggFeatures(meData, level = \"",
-                       input$featurelevel, "\")\n"))
+        aggCode(
+            paste0(
+                aggC,"\naggDat <- aggFeatures(meData, level = \"",
+                input$featurelevel, "\")\n"))
         shinyjs::js$collapse(ns("aggregation_box"))
     })
     
@@ -159,9 +173,9 @@ aggregationTab <- function(input, output, session,
             readr::write_csv(rawcounts, file)
         }
     )
- 
+    
     return(list(aggCode = aggCode,
                 mrobj = aggMRobj,
                 normalizedData = normalizedData))
-
+    
 }

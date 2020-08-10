@@ -8,6 +8,9 @@
 #' @author Janina Reeder
 #'
 #' @return fluidRow containing the ui code
+#' 
+#' @examples intraAnalysisUI("intraanalysis_id")
+#' 
 #' @export
 intraAnalysisUI <- function(id) {
   ns <- NS(id)
@@ -23,8 +26,8 @@ intraAnalysisUI <- function(id) {
       fluidRow(
         width = 11,
         box(width = 10,
-            p("The intra sample page contains methods to analyze the microbial composition 
-              and diversity within a sample")
+            p("The intra sample page contains methods to analyze the microbial 
+              composition and diversity within a sample")
         ),
         relAbundanceUI(ns("abundancePlot")),
         featAbundanceUI(ns("featurePlot")),
@@ -51,8 +54,6 @@ intraAnalysisUI <- function(id) {
 #' 
 #'
 #' @return reactive holding code to be used in reports
-#'
-#' @export
 intraAnalysis <- function(input, output, session, data, levelOpts,
                           chosenLevel, resetInput, aggData, normalizedData) {
   ## INTRA SAMPLE ANALYSIS

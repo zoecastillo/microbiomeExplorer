@@ -60,9 +60,14 @@ computeCI_Interval <- function(num, mS, method){
 #' @importFrom metagenomeSeq MRcounts
 #' @importFrom Biobase pData
 #' @importFrom magrittr %>%
+#' 
+#' @examples
+#' data("mouseData", package = "metagenomeSeq")
+#' aggdat <- aggFeatures(mouseData, level = "genus")
+#' corrFeature(aggdat, feat1 = "Bacteroides", feat2 = "Prevotella")
 #'
 #' @export
-corrFeature <- function(aggdat, feat1 = NULL, feat2 = NULL,
+corrFeature <- function(aggdat, feat1, feat2,
                         log = TRUE, method = c("spearman", "pearson", "kendall"),
                         addRegression = TRUE,
                         col_by = NULL, facet1 = NULL, facet2 = NULL,
@@ -115,12 +120,13 @@ corrFeature <- function(aggdat, feat1 = NULL, feat2 = NULL,
     showlegend <- FALSE
   }
   
-  df2 <- buildPlottingDF(df = df, 
-                         phenoTable = phenoTable,
-                         facet1 = facet1,
-                         facet2 = facet2,
-                         col_by = col_by,
-                         col_name = col_name)
+  df2 <- buildPlottingDF(
+    df = df, 
+    phenoTable = phenoTable,
+    facet1 = facet1,
+    facet2 = facet2,
+    col_by = col_by,
+    col_name = col_name)
   col_by <- col_name
   
   logtext <- ""
@@ -206,7 +212,10 @@ corrFeature <- function(aggdat, feat1 = NULL, feat2 = NULL,
       fit <- stats::lm(feat2 ~ feat1, data = sp, na.action = stats::na.exclude)
       mS_label <- tryCatch({
         mS <- stats::cor.test(sp$feat2,sp$feat1, method = method)
-        ci_interval <- computeCI_Interval(num = nrow(sp), mS = mS, method = method)
+        ci_interval <- computeCI_Interval(
+          num = nrow(sp), 
+          mS = mS, 
+          method = method)
         mS$lower <- round(ci_interval[["lower"]], getOption("me.round_digits"))
         mS$upper <- round(ci_interval[["upper"]], getOption("me.round_digits"))
 
@@ -227,11 +236,12 @@ corrFeature <- function(aggdat, feat1 = NULL, feat2 = NULL,
         x = sp$feat1,
         y = sp$feat2,
         color = facetgroup,
-        text = paste0(paste0("<b>", sp$samname, "</b>"), 
-                      paste0("<br>", feat1, ": ",
-                             round(sp$feat1, digits = getOption("me.round_digits"))), 
-                      paste0("<br>", feat2, ": ", 
-                             round(sp$feat2, digits = getOption("me.round_digits"))))
+        text = paste0(
+          paste0("<b>", sp$samname, "</b>"), 
+          paste0("<br>", feat1, ": ",
+                 round(sp$feat1, digits = getOption("me.round_digits"))), 
+          paste0("<br>", feat2, ": ", 
+                 round(sp$feat2, digits = getOption("me.round_digits"))))
       ) 
       
       fitlabel <- paste(
@@ -311,8 +321,8 @@ corrFeature <- function(aggdat, feat1 = NULL, feat2 = NULL,
 
 #' Scatterplot of a feature and a phenotype
 #'
-#' This function plots a scatterplot of a feature and a phenotype along with sample
-#' correlation statistics.
+#' This function plots a scatterplot of a feature and a phenotype along with 
+#' sample correlation statistics.
 #'
 #' @param aggdat aggregated MRExperiment
 #' @param feature Feature input.
@@ -336,9 +346,14 @@ corrFeature <- function(aggdat, feat1 = NULL, feat2 = NULL,
 #'
 #' @importFrom metagenomeSeq MRcounts
 #' @importFrom Biobase pData
+#' 
+#' @examples
+#' data("mouseData", package = "metagenomeSeq")
+#' aggdat <- aggFeatures(mouseData, level = "genus")
+#' corrPhenotype(aggdat, feature = "Bacteroides", phenotype = "relativeTime")
 #'
 #' @export
-corrPhenotype <- function(aggdat, feature = NULL, phenotype = NULL, log = TRUE, 
+corrPhenotype <- function(aggdat, feature, phenotype, log = TRUE, 
                           method = c("spearman", "pearson", "kendall"),
                           addRegression = TRUE,
                           col_by = NULL, facet1 = NULL, facet2 = NULL,
@@ -484,7 +499,10 @@ corrPhenotype <- function(aggdat, feature = NULL, phenotype = NULL, log = TRUE,
                        na.action = stats::na.exclude)       
       mS_label <- tryCatch({
         mS <- stats::cor.test(sp$phenotype, sp$feature, method = method)
-        ci_interval <- computeCI_Interval(num = nrow(sp), mS = mS, method = method)
+        ci_interval <- computeCI_Interval(
+          num = nrow(sp), 
+          mS = mS, 
+          method = method)
         mS$lower <- round(ci_interval[["lower"]], getOption("me.round_digits"))
         mS$upper <- round(ci_interval[["upper"]], getOption("me.round_digits"))
         ## store fit in fitlist
@@ -511,13 +529,14 @@ corrPhenotype <- function(aggdat, feature = NULL, phenotype = NULL, log = TRUE,
         x = sp$feature,
         y = sp$phenotype,
         color = facetgroup,
-        text = paste0(paste0("<b>", sp$samname, "</b>"), 
-                      paste0("<br>", feature, ": ", 
-                             round(sp$feature, 
-                                   digits = getOption("me.round_digits"))), 
-                      paste0("<br>", phenotype, ": ", 
-                             round(sp$phenotype, 
-                                   digits = getOption("me.round_digits"))))
+        text = paste0(
+          paste0("<b>", sp$samname, "</b>"), 
+          paste0("<br>", feature, ": ", 
+                 round(sp$feature, 
+                       digits = getOption("me.round_digits"))), 
+          paste0("<br>", phenotype, ": ", 
+                 round(sp$phenotype, 
+                       digits = getOption("me.round_digits"))))
       )
       
       fitlabel <- paste(

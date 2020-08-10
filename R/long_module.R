@@ -7,65 +7,67 @@
 #' @author Janina Reeder
 #' 
 #' @return row containing the UI elements
-#'
-#' @export
 longResultsUI <- function(id) {
   ns <- NS(id)
   
   fluidRow(
-    box(title = "LONGITUDINAL ANALYSIS", solidHeader = TRUE, 
-        collapsible = TRUE, width = 12,
-        fluidRow(
-          column(width = 11, id = ns("longplot_column"),
-                 shinycssloaders::withSpinner(plotly::plotlyOutput(ns("longplot"), 
-                                                  width = "auto", 
-                                                  height = "auto"),
-                             type = 3, color = "#424242", 
-                             color.background = "#fdfdfc"),
-                 br(),
-                 shinyjs::disabled(shinyWidgets::dropdownButton(
-                   tags$h3("Plot Options"),
-                   shinyWidgets::radioGroupButtons(
-                     inputId = ns("longChoice"),
-                     label = "Y axis",
-                     choices = c("Reads", "Percentage"),
-                     individual = TRUE,
-                     checkIcon = list(
-                       yes = tags$i(
-                         class = "fa fa-circle",
-                         style = "color: steelblue"
-                       ),
-                       no = tags$i(
-                         class = "fa fa-circle-o",
-                         style = "color: steelblue"
-                       )
-                     )
-                   ),        
-                   div(id=ns("pspan"), class = "percentage",
-                       p("Normalization is required to show percentage")
-                   ),
-                   shinyWidgets::switchInput(
-                     inputId = ns("logS"),
-                     label = "Log Scale",
-                     value = TRUE,
-                     size = "mini",
-                     labelWidth = "80px"
-                   ),
-                   sliderInput(
-                     inputId = ns("plotWidth"),
-                     label = "Adjust plot width",
-                     value = 650,
-                     min = 250,
-                     max = 1600,
-                     round = TRUE
-                   ),
-                   circle = FALSE, status = "danger", 
-                   icon = icon("gear"), width = "300px",
-                   label = "Plot Options",
-                   inputId = ns("optionbutton")
-                 ))
-          )
+    box(
+      title = "LONGITUDINAL ANALYSIS", solidHeader = TRUE, 
+      collapsible = TRUE, width = 12,
+      fluidRow(
+        column(
+          width = 11, id = ns("longplot_column"),
+          shinycssloaders::withSpinner(
+            plotly::plotlyOutput(ns("longplot"), 
+                                 width = "auto", 
+                                 height = "auto"),
+            type = 3, color = "#424242", 
+            color.background = "#fdfdfc"),
+          br(),
+          shinyjs::disabled(
+            shinyWidgets::dropdownButton(
+              tags$h3("Plot Options"),
+              shinyWidgets::radioGroupButtons(
+                inputId = ns("longChoice"),
+                label = "Y axis",
+                choices = c("Reads", "Percentage"),
+                individual = TRUE,
+                checkIcon = list(
+                  yes = tags$i(
+                    class = "fa fa-circle",
+                    style = "color: steelblue"
+                  ),
+                  no = tags$i(
+                    class = "fa fa-circle-o",
+                    style = "color: steelblue"
+                  )
+                )
+              ),        
+              div(id=ns("pspan"), class = "percentage",
+                  p("Normalization is required to show percentage")
+              ),
+              shinyWidgets::switchInput(
+                inputId = ns("logS"),
+                label = "Log Scale",
+                value = TRUE,
+                size = "mini",
+                labelWidth = "80px"
+              ),
+              sliderInput(
+                inputId = ns("plotWidth"),
+                label = "Adjust plot width",
+                value = 650,
+                min = 250,
+                max = 1600,
+                round = TRUE
+              ),
+              circle = FALSE, status = "danger", 
+              icon = icon("gear"), width = "300px",
+              label = "Plot Options",
+              inputId = ns("optionbutton")
+            ))
         )
+      )
     )
   )
 }
@@ -85,8 +87,6 @@ longResultsUI <- function(id) {
 #' @author Janina Reeder
 #' 
 #' @return list containing R code for analysis and for feature plots
-#'
-#' @export
 longResults <- function(input, output, session, 
                         aggDat, 
                         featLevel, 
@@ -110,7 +110,7 @@ longResults <- function(input, output, session,
     width(input$plotWidth)
   })
   
-
+  
   observeEvent(width(), {
     req(aggDat(), longSettings()$featureselect)
     plotly::plotlyProxy("longplot", session) %>%
@@ -130,8 +130,8 @@ longResults <- function(input, output, session,
     ylab <- "Reads"
     if(isFALSE(normalizedData())){
       shinyWidgets::updateRadioGroupButtons(session = session,
-                              inputId = "longChoice",
-                              selected = "Reads")
+                                            inputId = "longChoice",
+                                            selected = "Reads")
       shinyjs::removeClass(id = "pspan", class = "hide")
       shinyjs::disable("longChoice")
     } else {
@@ -150,14 +150,14 @@ longResults <- function(input, output, session,
     }
     
     plotLongFeature(aggDat(),
-                x_var = longSettings()$comparison,
-                id_var = phenoId,
-                plotTitle = plotTitle,
-                feature = longSettings()$featureselect,
-                ylab = ylab,
-                log = input$logS,
-                showLines = showLines,
-                x_levels = longSettings()$phenolevels
+                    x_var = longSettings()$comparison,
+                    id_var = phenoId,
+                    plotTitle = plotTitle,
+                    feature = longSettings()$featureselect,
+                    ylab = ylab,
+                    log = input$logS,
+                    showLines = showLines,
+                    x_levels = longSettings()$phenolevels
     ) 
   })
   
@@ -174,8 +174,8 @@ longResults <- function(input, output, session,
       paste0("plotLongFeature(aggDat,"),
       paste0("\tx_var = \"", longSettings()$comparison, "\","),
       'if'(longSettings()$phenoid != "",
-             paste0("\tid_var = \"", longSettings()$phenoid, "\","),
-             paste0("\tshowLines = FALSE,")),
+           paste0("\tid_var = \"", longSettings()$phenoid, "\","),
+           paste0("\tshowLines = FALSE,")),
       paste0("\tplotTitle = \"",plotTitle, "\","),
       paste0("\tfeature = \"", longSettings()$featureselect, "\","),
       paste0("\tylab = \"", input$longChoice, "\","),
@@ -191,5 +191,5 @@ longResults <- function(input, output, session,
   })
   
   return(repCode)
-
+  
 }

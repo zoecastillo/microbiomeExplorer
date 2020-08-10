@@ -8,7 +8,6 @@
 #' @author Janina Reeder
 #'
 #' @return box containing the ui code
-#' @export
 relAbundanceUI <- function(id) {
   ns <- NS(id)
   
@@ -19,53 +18,55 @@ relAbundanceUI <- function(id) {
       column(
         width = 11,
         shinycssloaders::withSpinner(
-          plotly::plotlyOutput(ns("relabplot"), 
-                               width = "auto", 
-                               height = "auto"),
+          plotly::plotlyOutput(
+            ns("relabplot"), 
+            width = "auto", 
+            height = "auto"),
           type = 3, color = "#424242", color.background = "#fdfdfc"),
         br(),
-        shinyjs::disabled(shinyWidgets::dropdownButton(
-          tags$h3("Plot Options"),
-          shinyWidgets::radioGroupButtons(
-            inputId = ns("relAbChoice"),
-            label = "Y axis",
-            choices = c("Percentage", "Reads"),
-            individual = TRUE,
-            checkIcon = list(
-              yes = tags$i(
-                class = "fa fa-circle",
-                style = "color: steelblue"
-              ),
-              no = tags$i(
-                class = "fa fa-circle-o",
-                style = "color: steelblue"
+        shinyjs::disabled(
+          shinyWidgets::dropdownButton(
+            tags$h3("Plot Options"),
+            shinyWidgets::radioGroupButtons(
+              inputId = ns("relAbChoice"),
+              label = "Y axis",
+              choices = c("Percentage", "Reads"),
+              individual = TRUE,
+              checkIcon = list(
+                yes = tags$i(
+                  class = "fa fa-circle",
+                  style = "color: steelblue"
+                ),
+                no = tags$i(
+                  class = "fa fa-circle-o",
+                  style = "color: steelblue"
+                )
               )
-            )
-          ),
-          div(id=ns("pspan"), class = "percentage",
-               p("Normalization is required to show percentage")
-          ),
-          span(
-            numericInput(
-              inputId = ns("numofFeatures"),
-              label = "Max number of Features to show",
-              value = 10,
-              min = 1
             ),
-            sliderInput(
-              inputId = ns("plotWidth"),
-              label = "Adjust plot width",
-              value = 650,
-              min = 250,
-              max = 1600,
-              round = TRUE
-            )
-          ),
-          circle = FALSE, status = "danger",
-          icon = icon("gear"), width = "300px",
-          label = "Plot Options",
-          inputId = ns("optionbutton")
-        ))
+            div(id=ns("pspan"), class = "percentage",
+                p("Normalization is required to show percentage")
+            ),
+            span(
+              numericInput(
+                inputId = ns("numofFeatures"),
+                label = "Max number of Features to show",
+                value = 10,
+                min = 1
+              ),
+              sliderInput(
+                inputId = ns("plotWidth"),
+                label = "Adjust plot width",
+                value = 650,
+                min = 250,
+                max = 1600,
+                round = TRUE
+              )
+            ),
+            circle = FALSE, status = "danger",
+            icon = icon("gear"), width = "300px",
+            label = "Plot Options",
+            inputId = ns("optionbutton")
+          ))
       )
     )
   )
@@ -85,7 +86,6 @@ relAbundanceUI <- function(id) {
 #'
 #' @return list storing plot clicks and number of features displayed 
 #' (passed to feature plot module) as well as the R code to make plot
-#' @export
 relAbundance <- function(input, output, session, 
                          aggDat, 
                          featLevel, 
@@ -113,21 +113,21 @@ relAbundance <- function(input, output, session,
   observe({
     width(input$plotWidth)
   })
-
+  
   
   ## debouncing number of features to avoid multiple redraws
   nof <- reactive(input$numofFeatures)
   numOfFeats <- debounce(nof,1000)
   
-
+  
   ## calls the plotting function
   observe({
     req(aggDat(), intraSettings(),numOfFeats())
     ylab <- "Reads"
     if(isFALSE(normalizedData())){
       shinyWidgets::updateRadioGroupButtons(session = session,
-                              inputId = "relAbChoice",
-                              selected = "Reads")
+                                            inputId = "relAbChoice",
+                                            selected = "Reads")
       shinyjs::removeClass(id = "pspan", class = "hide")
       shinyjs::disable("relAbChoice")
     } else {
@@ -162,7 +162,7 @@ relAbundance <- function(input, output, session,
                         x_var = intraSettings()$xvariable,
                         facet1 = facet1,
                         facet2 = facet2,
-                        ind = 1:numOfFeats(), 
+                        ind = seq_len(numOfFeats()), 
                         plotTitle = plotTitle,
                         ylab = ylab
     ) 
@@ -254,7 +254,6 @@ relAbundance <- function(input, output, session,
 #' @param id namespace identifier
 #'
 #' @return box holding the UI code
-#' @export
 featAbundanceUI <- function(id) {
   ns <- NS(id)
   
@@ -263,60 +262,62 @@ featAbundanceUI <- function(id) {
       fluidRow(
         column(
           width = 11,
-          shinycssloaders::withSpinner(plotly::plotlyOutput(ns("featplot"), 
-                                           width = "auto", 
-                                           height = "auto"),
-                      type = 3, color = "#424242", 
-                      color.background = "#fdfdfc"),
+          shinycssloaders::withSpinner(
+            plotly::plotlyOutput(ns("featplot"), 
+                                 width = "auto", 
+                                 height = "auto"),
+            type = 3, color = "#424242", 
+            color.background = "#fdfdfc"),
           br(),
-          shinyjs::disabled(shinyWidgets::dropdownButton(
-            tags$h3("Plot Options"),
-            shinyWidgets::radioGroupButtons(
-              inputId = ns("featChoice"),
-              label = "Y axis",
-              choices = c("Reads", "Percentage"),
-              individual = TRUE,
-              checkIcon = list(
-                yes = tags$i(
-                  class = "fa fa-circle",
-                  style = "color: steelblue"
-                ),
-                no = tags$i(
-                  class = "fa fa-circle-o",
-                  style = "color: steelblue"
+          shinyjs::disabled(
+            shinyWidgets::dropdownButton(
+              tags$h3("Plot Options"),
+              shinyWidgets::radioGroupButtons(
+                inputId = ns("featChoice"),
+                label = "Y axis",
+                choices = c("Reads", "Percentage"),
+                individual = TRUE,
+                checkIcon = list(
+                  yes = tags$i(
+                    class = "fa fa-circle",
+                    style = "color: steelblue"
+                  ),
+                  no = tags$i(
+                    class = "fa fa-circle-o",
+                    style = "color: steelblue"
+                  )
                 )
-              )
-            ),          
-            div(id=ns("pspan"), class = "percentage",
-                p("Normalization is required to show percentage")
-            ),
-            shinyWidgets::switchInput(
-              inputId = ns("sP"),
-              label = "Show Points",
-              value = TRUE,
-              size = "mini",
-              labelWidth = "80px"
-            ),
-            shinyWidgets::switchInput(
-              inputId = ns("logS"),
-              label = "Log Scale",
-              value = TRUE,
-              size = "mini",
-              labelWidth = "80px"
-            ),
-            sliderInput(
-              inputId = ns("plotWidth"),
-              label = "Adjust plot width",
-              value = 650,
-              min = 250,
-              max = 1600,
-              round = TRUE
-            ),
-            circle = FALSE, status = "danger", 
-            icon = icon("gear"), width = "300px",
-            label = "Plot Options",
-            inputId = ns("optionbutton")
-          ))
+              ),          
+              div(id=ns("pspan"), class = "percentage",
+                  p("Normalization is required to show percentage")
+              ),
+              shinyWidgets::switchInput(
+                inputId = ns("sP"),
+                label = "Show Points",
+                value = TRUE,
+                size = "mini",
+                labelWidth = "80px"
+              ),
+              shinyWidgets::switchInput(
+                inputId = ns("logS"),
+                label = "Log Scale",
+                value = TRUE,
+                size = "mini",
+                labelWidth = "80px"
+              ),
+              sliderInput(
+                inputId = ns("plotWidth"),
+                label = "Adjust plot width",
+                value = 650,
+                min = 250,
+                max = 1600,
+                round = TRUE
+              ),
+              circle = FALSE, status = "danger", 
+              icon = icon("gear"), width = "300px",
+              label = "Plot Options",
+              inputId = ns("optionbutton")
+            ))
         )
       )
   )
@@ -337,7 +338,8 @@ featAbundanceUI <- function(id) {
 #' @param featName plotly click event passed via relative abundance
 #' @param numOfFeats number of features shown in relative abundance plot 
 #' (affects plotly click data)
-#' @param ylabMode character indication if raw \"Reads\" or \"Percentage\" should be shown
+#' @param ylabMode character indication if raw \"Reads\" or \"Percentage\" 
+#' should be shown
 #' @param normalizedData boolean indicating whether data has been normalized
 #' @param reset boolean reactive which resets the module if TRUE
 #' 
@@ -345,8 +347,6 @@ featAbundanceUI <- function(id) {
 #' @author Janina Reeder
 #' 
 #' @return R code needed to build the feature plot
-#'
-#' @export
 featAbundance <- function(input, output, session, 
                           aggDat, 
                           featLevel, 
@@ -381,7 +381,8 @@ featAbundance <- function(input, output, session,
   
   observe({
     req(ylabMode())
-    shinyWidgets::updateRadioGroupButtons(session,"featChoice", selected = ylabMode())
+    shinyWidgets::updateRadioGroupButtons(
+      session,"featChoice", selected = ylabMode())
   })
   
   observe({
@@ -424,8 +425,8 @@ featAbundance <- function(input, output, session,
     ylab <- "Reads"
     if(!normalizedData()){
       shinyWidgets::updateRadioGroupButtons(session = session,
-                              inputId = "featChoice",
-                              selected = "Reads")
+                                            inputId = "featChoice",
+                                            selected = "Reads")
       shinyjs::removeClass(id = "pspan", class = "hide")
       shinyjs::disable("featChoice")
     } else {
@@ -453,15 +454,15 @@ featAbundance <- function(input, output, session,
                           facet2)
     }
     plotSingleFeature(aggDat(),
-                x_var = intraSettings()$xvariable,
-                ind = 1:numOfFeats(),
-                plotTitle = plotTitle,
-                facet1 = intraSettings()$facetby,
-                facet2 = intraSettings()$facetby2,
-                feature = selectedFeature(),
-                ylab = ylab,
-                log = input$logS,
-                showPoints = isolate(input$sP)
+                      x_var = intraSettings()$xvariable,
+                      ind = seq_len(numOfFeats()),
+                      plotTitle = plotTitle,
+                      facet1 = intraSettings()$facetby,
+                      facet2 = intraSettings()$facetby2,
+                      feature = selectedFeature(),
+                      ylab = ylab,
+                      log = input$logS,
+                      showPoints = isolate(input$sP)
     )
   })
   
@@ -499,18 +500,18 @@ featAbundance <- function(input, output, session,
       paste0(
         "\tfacet1 = ", 
         'if'(is.null(intraSettings()$facetby),
-               "NULL",
-               paste0("\"", 
-                      intraSettings()$facetby, "\"")
+             "NULL",
+             paste0("\"", 
+                    intraSettings()$facetby, "\"")
         ),
         ","
       ),
       paste0(
         "\tfacet2 = ", 
         'if'(is.null(intraSettings()$facetby2),
-               "NULL",
-               paste0("\"", 
-                      intraSettings()$facetby2, "\"")
+             "NULL",
+             paste0("\"", 
+                    intraSettings()$facetby2, "\"")
         ),
         ","
       ),
@@ -533,7 +534,6 @@ featAbundance <- function(input, output, session,
 #' @author Janina Reeder
 #'
 #' @return box holding the UI code
-#' @export
 alphaDiversityUI <- function(id) {
   ns <- NS(id)
   
@@ -542,40 +542,43 @@ alphaDiversityUI <- function(id) {
       fluidRow(
         column(
           width = 11,
-          shinycssloaders::withSpinner(plotly::plotlyOutput(ns("alphaDiv"), 
-                                           width = "auto", 
-                                           height = "auto"),
-                      type = 3, color = "#424242", 
-                      color.background = "#fdfdfc"),
+          shinycssloaders::withSpinner(
+            plotly::plotlyOutput(
+              ns("alphaDiv"), 
+              width = "auto", 
+              height = "auto"),
+            type = 3, color = "#424242", 
+            color.background = "#fdfdfc"),
           br(),
-          shinyjs::disabled(shinyWidgets::dropdownButton(
-            tags$h3("Plot Options"),
-            selectInput(
-              inputId = ns("alphaInd"),
-              label = "Index",
-              choices = c(
-                "Shannon", "Simpson", "Inverse Simpson",
-                "Richness"
-              )
-            ),
-            selectInput(
-              inputId = ns("alphacol"),
-              label = "Color by",
-              choices = ""
-            ),
-            sliderInput(
-              inputId = ns("plotWidth"),
-              label = "Adjust plot width",
-              value = 650,
-              min = 250,
-              max = 1600,
-              round = TRUE
-            ),
-            circle = FALSE, status = "danger", 
-            icon = icon("gear"), width = "300px",
-            label = "Plot Options",
-            inputId = ns("optionbutton")
-          ))
+          shinyjs::disabled(
+            shinyWidgets::dropdownButton(
+              tags$h3("Plot Options"),
+              selectInput(
+                inputId = ns("alphaInd"),
+                label = "Index",
+                choices = c(
+                  "Shannon", "Simpson", "Inverse Simpson",
+                  "Richness"
+                )
+              ),
+              selectInput(
+                inputId = ns("alphacol"),
+                label = "Color by",
+                choices = ""
+              ),
+              sliderInput(
+                inputId = ns("plotWidth"),
+                label = "Adjust plot width",
+                value = 650,
+                min = 250,
+                max = 1600,
+                round = TRUE
+              ),
+              circle = FALSE, status = "danger", 
+              icon = icon("gear"), width = "300px",
+              label = "Plot Options",
+              inputId = ns("optionbutton")
+            ))
         )
       )
   )
@@ -596,8 +599,6 @@ alphaDiversityUI <- function(id) {
 #' @author Janina Reeder
 #' 
 #' @return R code used to make the alpha diversity plot
-#'
-#' @export
 alphaDiversity <- function(input, output, session, 
                            aggDat, 
                            featLevel, 
@@ -734,24 +735,24 @@ alphaDiversity <- function(input, output, session,
       paste0(
         "\tfacet1 = ", 
         'if'(is.null(intraSettings()$facetby),
-               "NULL",
-               paste0("\"", 
-                      intraSettings()$facetby, "\"")
+             "NULL",
+             paste0("\"", 
+                    intraSettings()$facetby, "\"")
         ),
         ","
       ),
       paste0(
         "\tfacet2 = ", 
         'if'(is.null(intraSettings()$facetby2),
-               "NULL",
-               paste0("\"", 
-                      intraSettings()$facetby2, "\"")
+             "NULL",
+             paste0("\"", 
+                    intraSettings()$facetby2, "\"")
         ),
         ","
       ),
       paste0("\tcol_by = ", 
              'if'(is.null(color), "NULL", 
-                    paste0("\"", color, "\"")), ","),
+                  paste0("\"", color, "\"")), ","),
       paste0("\tplotTitle = \"",plotTitle, "\")\n\n"),
       sep = "\n"
     ))

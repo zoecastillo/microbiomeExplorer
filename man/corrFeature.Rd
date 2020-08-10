@@ -6,8 +6,8 @@
 \usage{
 corrFeature(
   aggdat,
-  feat1 = NULL,
-  feat2 = NULL,
+  feat1,
+  feat2,
   log = TRUE,
   method = c("spearman", "pearson", "kendall"),
   addRegression = TRUE,
@@ -61,4 +61,10 @@ list holding plotly plot and lm fit
 \description{
 This function plots a scatterplot of two features along with sample
 correlation statistics.
+}
+\examples{
+data("mouseData", package = "metagenomeSeq")
+aggdat <- aggFeatures(mouseData, level = "genus")
+corrFeature(aggdat, feat1 = "Bacteroides", feat2 = "Prevotella")
+
 }

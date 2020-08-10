@@ -17,6 +17,9 @@ featureTable(input, output, session, meData, featureModRep)
 
 \item{featureModRep}{reactiveValue storing modifications performed on fData}
 }
+\value{
+feature table server fragment - no return value
+}
 \description{
 Feature table module server code
 }

@@ -9,8 +9,15 @@ reportListUI(id)
 \arguments{
 \item{id}{namespace identifier}
 }
+\value{
+fluidRow holding ui elements
+}
 \description{
 report tab ui
+}
+\examples{
+reportListUI("reportlist_id")
+
 }
 \author{
 Janina Reeder

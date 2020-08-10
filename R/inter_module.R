@@ -9,22 +9,24 @@
 #' @author Janina Reeder
 #'
 #' @return box holding the UI code
-#' @export
 abundanceHeatmapUI <- function(id) {
   ns <- NS(id)
   
-  box(title = "ABUNDANCE HEATMAP", solidHeader = TRUE, 
-      collapsible = TRUE, width = 12,
-      fluidRow(
-        column(
-          width = 11,
-          shinycssloaders::withSpinner(plotly::plotlyOutput(ns("abhmplot"), 
-                                           width = "auto", 
-                                           height = "800px"),
-                      type = 3, color = "#424242", 
-                      color.background = "#fdfdfc"),
-          br(),
-          shinyjs::disabled(shinyWidgets::dropdownButton(
+  box(
+    title = "ABUNDANCE HEATMAP", solidHeader = TRUE, 
+    collapsible = TRUE, width = 12,
+    fluidRow(
+      column(
+        width = 11,
+        shinycssloaders::withSpinner(
+          plotly::plotlyOutput(ns("abhmplot"), 
+                               width = "auto", 
+                               height = "800px"),
+          type = 3, color = "#424242", 
+          color.background = "#fdfdfc"),
+        br(),
+        shinyjs::disabled(
+          shinyWidgets::dropdownButton(
             tags$h3("Plot Options"),
             numericInput(
               inputId = ns("hmfeats"),
@@ -50,15 +52,16 @@ abundanceHeatmapUI <- function(id) {
               value = TRUE,
               labelWidth = "80px"
             ),
-            actionButton(ns("changeHeatmapSettings"), 
-                         label = "GO", width = "50px"),
+            actionButton(
+              ns("changeHeatmapSettings"), 
+              label = "GO", width = "50px"),
             circle = FALSE, status = "danger", 
             icon = icon("gear"), width = "300px",
             label = "Plot Options",
             inputId = ns("optionbutton")
           ))
-        )
       )
+    )
   )
 }
 
@@ -78,8 +81,6 @@ abundanceHeatmapUI <- function(id) {
 #' @author Janina Reeder
 #' 
 #' @return R code needed to generate the heatmap
-#'
-#' @export
 abundanceHeatmap <- function(input, output, session, 
                              aggDat, 
                              featLevel, 
@@ -104,7 +105,7 @@ abundanceHeatmap <- function(input, output, session,
     req(levelOpts(), featLevel())
     uptoind <- which(levelOpts() == featLevel())
     updateSelectInput(session, "rowcol", 
-                      choices = c("", levelOpts()[1:uptoind]))
+                      choices = c("", levelOpts()[seq_len(uptoind)]))
   })
   
   ## reatives storing plot options and whether plot update is required
@@ -127,7 +128,7 @@ abundanceHeatmap <- function(input, output, session,
     shinyjs::reset("abhmplot")
   })
   
-
+  
   ## update plot options based on GO click
   observeEvent(input$changeHeatmapSettings,{
     changed <- FALSE
@@ -156,10 +157,10 @@ abundanceHeatmap <- function(input, output, session,
     req(aggDat(), hmSort(), updatePlot())
     shinyjs::enable("optionbutton_state")
     plotTitle <- 'if'(is.null(hmFeatList()),
-                        paste0("Top ", numOfFeats(),
-                               " features sorted by ",
-                               hmSort()),
-                        paste0("Selected features"))
+                      paste0("Top ", numOfFeats(),
+                             " features sorted by ",
+                             hmSort()),
+                      paste0("Selected features"))
     plotTitle <- paste0(plotTitle,
                         " at ",
                         featLevel(),
@@ -170,22 +171,22 @@ abundanceHeatmap <- function(input, output, session,
       paste0("plotHeatmap(aggDat,"),
       paste0("\tfeatures = ", 
              'if'(is.null(hmFeatList()), "NULL", 
-                    paste0("c(",
-                           paste0("\"", hmFeatList(), "\"",
-                                  collapse = ", "), ")")),
+                  paste0("c(",
+                         paste0("\"", hmFeatList(), "\"",
+                                collapse = ", "), ")")),
              ","),
       paste0("\tlog = ", logScale(), ","),
       paste0("\tsort_by = \"", hmSort(), "\","),
       paste0("\tnfeat = ", numOfFeats(), ","),
       paste0("\tcol_by = ", 
              'if'(is.null(hmColors()), "NULL", 
-                    paste0("c(",
-                           paste0("\"", hmColors(), "\"", 
-                                  collapse = ", "),")")),
+                  paste0("c(",
+                         paste0("\"", hmColors(), "\"", 
+                                collapse = ", "),")")),
              ","),
       paste0("\trow_by = ", 
              'if'(is.null(rowColors()), "NULL", 
-                    paste0("\"", rowColors(), "\"")), ","),
+                  paste0("\"", rowColors(), "\"")), ","),
       paste0("\tplotTitle = \"",plotTitle,"\")\n\n"),
       sep = "\n"
     ))
@@ -214,21 +215,23 @@ abundanceHeatmap <- function(input, output, session,
 #' @author Janina Reeder
 #'
 #' @return box holding the ui code
-#' @export
 betaDiversityUI <- function(id) {
   ns <- NS(id)
   
-  box(title = "BETA DIVERSITY", solidHeader = TRUE, 
-      collapsible = TRUE, width = 12,
-      fluidRow(
-        column(
-          width = 11,
-          shinycssloaders::withSpinner(plotly::plotlyOutput(ns("betaDiv"), 
-                                           width = "auto",
-                                           height = "auto"), 
-                      type = 3, color = "#424242", 
-                      color.background = "#fdfdfc"),
-          shinyjs::disabled(shinyWidgets::dropdownButton(
+  box(
+    title = "BETA DIVERSITY", solidHeader = TRUE, 
+    collapsible = TRUE, width = 12,
+    fluidRow(
+      column(
+        width = 11,
+        shinycssloaders::withSpinner(
+          plotly::plotlyOutput(ns("betaDiv"), 
+                               width = "auto",
+                               height = "auto"), 
+          type = 3, color = "#424242", 
+          color.background = "#fdfdfc"),
+        shinyjs::disabled(
+          shinyWidgets::dropdownButton(
             tags$h3("Plot Options"),
             selectInput(
               inputId = ns("Xbeta"),
@@ -250,12 +253,12 @@ betaDiversityUI <- function(id) {
               choices = ""
             ),
             checkboxInput(inputId = ns("confEllipse"),
-                                 label = "Add confidence ellipse",
-                                 value = FALSE),
+                          label = "Add confidence ellipse",
+                          value = FALSE),
             sliderInput(inputId = ns("confLevel"),
-                                   label = "Confidence Level",
-                                   min = 0.01, max = 0.99,
-                                   step = 0.01, value = 0.95),
+                        label = "Confidence Level",
+                        min = 0.01, max = 0.99,
+                        step = 0.01, value = 0.95),
             selectInput(inputId = ns("betashape"),
                         label = "Shape by",
                         choices = ""
@@ -279,15 +282,15 @@ betaDiversityUI <- function(id) {
             label = "Plot Options",
             inputId = ns("optionbutton")
           ))
-        )
-      ),
-      fluidRow(
-        column(width = 1),
-        column(width = 10, class = "statsrow",
-               DT::DTOutput(ns("statsdatatable"), 
-                            width = "90%", height = "auto")
-        )
       )
+    ),
+    fluidRow(
+      column(width = 1),
+      column(width = 10, class = "statsrow",
+             DT::DTOutput(ns("statsdatatable"), 
+                          width = "90%", height = "auto")
+      )
+    )
   )
 }
 
@@ -308,8 +311,6 @@ betaDiversityUI <- function(id) {
 #' @author Janina Reeder
 #'
 #' @return R code needed to generate the beta diversity plot
-#'
-#' @export
 betaDiversity <- function(input, output, session, 
                           aggDat, 
                           aggLevel,
@@ -366,15 +367,6 @@ betaDiversity <- function(input, output, session,
     updateSelectInput(session, "betashape", 
                       choices = c("None",shapeOptions()))
   })
-  
-  # observe({
-  #   if(is.null(betaSettings()$adonisvar) || betaSettings()$adonisvar == ""){
-  #     adonisText(NULL)
-  #     adonisVar(NULL)
-  #     adonisStrata(NULL)
-  #     adonisCode(NULL)
-  #   }
-  # })
   
   observeEvent(input$betacol,{
     if(input$betacol == "No Color"){
@@ -459,10 +451,10 @@ betaDiversity <- function(input, output, session,
         }
       }
     } else {
-          adonisText(NULL)
-          adonisVar(NULL)
-          adonisStrata(NULL)
-          adonisCode(NULL)
+      adonisText(NULL)
+      adonisVar(NULL)
+      adonisStrata(NULL)
+      adonisCode(NULL)
     }
   })
   
@@ -573,8 +565,10 @@ betaDiversity <- function(input, output, session,
       
       
       adonisData <- as.data.frame(x$aov.tab)
-      adonisData[] <- sapply(adonisData, as.numeric)
-      adonisData[] <- sapply(adonisData, round, digits = getOption("me.round_digits"))
+      adonisData[] <- vapply(adonisData, as.numeric, numeric(3))
+      adonisData[] <- vapply(adonisData, round, 
+                             digits = getOption("me.round_digits"),
+                             numeric(3))
       
       adonisText(paste0("R2: ", adonisData[1,"R2"],
                         "; Pr(>F): ", adonisData[1,"Pr(>F)"]))
@@ -725,10 +719,10 @@ betaDiversity <- function(input, output, session,
       paste0("\tdim = c(\"", xbeta(), "\", \"", ybeta(), "\"),"),
       paste0("\tcol_by = ", 
              'if'(is.null(color), "NULL", 
-                    paste0("\"", color, "\"")), ","),
+                  paste0("\"", color, "\"")), ","),
       paste0("\tshape_by = ", 
              'if'(is.null(shape), "NULL", 
-                    paste0("\"", shape, "\"")), ","),
+                  paste0("\"", shape, "\"")), ","),
       paste0("\tplotTitle = \"",plotTitle, "\","),
       paste0("\tpt_size = \"",sizeChoice(), "\","),
       paste0("\tplotText = \"",adonisText(), "\","),

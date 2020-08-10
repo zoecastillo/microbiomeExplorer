@@ -39,7 +39,8 @@ featAbundance(
 \item{numOfFeats}{number of features shown in relative abundance plot 
 (affects plotly click data)}
 
-\item{ylabMode}{character indication if raw \"Reads\" or \"Percentage\" should be shown}
+\item{ylabMode}{character indication if raw \"Reads\" or \"Percentage\" 
+should be shown}
 
 \item{normalizedData}{boolean indicating whether data has been normalized}
 

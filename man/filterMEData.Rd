@@ -21,6 +21,11 @@ the filtered MRobj
 \description{
 Function to filter the MRexperiment data by numerical parameters
 }
+\examples{
+data("mouseData", package = "metagenomeSeq")
+filterMEData(MRobj = mouseData, minpresence = 4, minfeats = 300)
+
+}
 \author{
 Janina Reeder
 }

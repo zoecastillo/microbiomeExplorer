@@ -23,10 +23,15 @@
 #' @importFrom Biobase pData
 #'
 #' @return plotly plot
+#' 
+#' @examples 
+#' data("mouseData", package = "metagenomeSeq")
+#' aggdat <- aggFeatures(mouseData, level = "genus")
+#' plotAbundance(aggdat, level = "genus", x_var = "diet")
 #'
 #' @export
 plotAbundance <- function(aggdat, level, x_var = "SAMPLE_ID",
-                          ind = 1:10, plotTitle = "", ylab = "Reads", 
+                          ind = seq_len(10), plotTitle = "", ylab = "Reads", 
                           facet1 = NULL, facet2 = NULL, source = "A",
                           pwidth = 650, pheight = 150) {
   facets <- NULL
@@ -79,7 +84,8 @@ plotAbundance <- function(aggdat, level, x_var = "SAMPLE_ID",
   }
   
   ## define color palette
-  pal <- grDevices::colorRampPalette(c(RColorBrewer::brewer.pal(min(length(ind), 12), "Paired")))
+  pal <- grDevices::colorRampPalette(
+    c(RColorBrewer::brewer.pal(min(length(ind), 12), "Paired")))
   colvalues <- c(pal(max(ind)), "gray")
   
   ## get yval for every group to be shown (by feature, x_var and both 
@@ -122,7 +128,7 @@ plotAbundance <- function(aggdat, level, x_var = "SAMPLE_ID",
   totalheight <- pheight + 300 * length(facetvals2)
   
   legendlevel <- getLegendLevel(df2, facets = "facets", facet2s = "facet2s")
-
+  
   
   ## iterate over facet2 around facet1
   ## for each facetvalue in facet2 we need a row
@@ -160,7 +166,7 @@ plotAbundance <- function(aggdat, level, x_var = "SAMPLE_ID",
           showL <- TRUE
         }
       }
-  
+      
       ## no values available for this combination of facet2 and facet1:
       ## draw empty plot
       if (nrow(sp) == 0) {
@@ -202,7 +208,7 @@ plotAbundance <- function(aggdat, level, x_var = "SAMPLE_ID",
   
   p <- plotly::subplot(plotlist, nrows = length(plotlist), 
                        shareY = FALSE, titleX = TRUE, titleY = TRUE) %>%
-      add_plotly_config()
+    add_plotly_config()
   
   return(p)
 }
@@ -229,15 +235,23 @@ plotAbundance <- function(aggdat, level, x_var = "SAMPLE_ID",
 #' @param fixedHeight sets a specific plot height (differential analysis)
 #' @param x_levels restrict to specific levels of x_var (differential analysis)
 #' @param pwidth overall plot width; default is 650 
+#' 
+#' @return plotly plot object
 #'
 #' @author Janina Reeder
 #' 
 #' @importFrom metagenomeSeq MRcounts
 #' @importFrom Biobase pData
+#' 
+#' @examples 
+#' data("mouseData", package = "metagenomeSeq")
+#' aggdat <- aggFeatures(mouseData, level = "genus")
+#' plotSingleFeature(aggdat, feature = "Prevotella", x_var = "diet")
 #'
 #' @export
 plotSingleFeature <- function(aggdat, feature = "other", x_var = "SAMPLE_ID",
-                              ind = 1:10, plotTitle = NULL, ylab = "Reads",
+                              ind = seq_len(10), plotTitle = NULL, 
+                              ylab = "Reads",
                               xlab = NULL,
                               facet1 = NULL, facet2 = NULL,
                               log = FALSE, showPoints = FALSE,
@@ -304,7 +318,8 @@ plotSingleFeature <- function(aggdat, feature = "other", x_var = "SAMPLE_ID",
   }
   
   ## set up color palette (same as relative abundance for color consistency)
-  pal <- grDevices::colorRampPalette(c(RColorBrewer::brewer.pal(min(length(ind), 12), "Paired")))
+  pal <- grDevices::colorRampPalette(
+    c(RColorBrewer::brewer.pal(min(length(ind), 12), "Paired")))
   colvalues <- c(pal(max(ind)), "gray")
   
   if (feat_pos <= max(ind)) {
@@ -399,7 +414,7 @@ plotSingleFeature <- function(aggdat, feature = "other", x_var = "SAMPLE_ID",
   
   ## nrows will be determined by levels of facet2
   p <- plotly::subplot(plotlist, nrows = length(plotlist), 
-               shareY = FALSE, titleX = TRUE, titleY = TRUE) %>%
+                       shareY = FALSE, titleX = TRUE, titleY = TRUE) %>%
     plotly::layout(showlegend = TRUE) %>%
     add_plotly_config()
   
@@ -414,8 +429,8 @@ plotSingleFeature <- function(aggdat, feature = "other", x_var = "SAMPLE_ID",
 #'
 #' @param aggdat aggregated MRExperiment
 #' @param level Feature level
-#' @param index Diversity index, one of "shannon", "simpson", "invsimpson" or "richness"
-#' (=number of features). Default is "shannon".
+#' @param index Diversity index, one of "shannon", "simpson", "invsimpson" or 
+#' "richness" (=number of features). Default is "shannon".
 #' @param x_var Phenotype to aggregate over on X-axis. Default by "SAMPLE_ID".
 #' @param ylab Y-axis label. Default is "Reads".
 #' @param col_by Phenotype for coloring.
@@ -429,6 +444,11 @@ plotSingleFeature <- function(aggdat, feature = "other", x_var = "SAMPLE_ID",
 #' 
 #' @importFrom metagenomeSeq MRcounts
 #' @importFrom Biobase pData
+#' 
+#' @examples 
+#' data("mouseData", package = "metagenomeSeq")
+#' aggdat <- aggFeatures(mouseData, level = "genus")
+#' plotAlpha(aggdat, level = "genus", index = "shannon", x_var = "diet")
 #'
 #' @export
 plotAlpha <- function(aggdat, level,
@@ -506,8 +526,9 @@ plotAlpha <- function(aggdat, level,
     colvalues <- "#a5a39f"
   } 
   
-  df2$text <- paste0("<b>",df2$samname,"</b><br />",
-                     round(df2$Diversity, digits = getOption("me.round_digits")))
+  df2$text <- paste0(
+    "<b>",df2$samname,"</b><br />",
+    round(df2$Diversity, digits = getOption("me.round_digits")))
   df2 <- df2 %>%
     dplyr::group_by(x_var = get(x_var), 
                     facets = get(facet1), facet2s = get(facet2))
@@ -527,7 +548,7 @@ plotAlpha <- function(aggdat, level,
       dplyr::group_by(facet2s) %>%
       dplyr::filter(facet2s %in% fv2)
     
-
+    
     if (facet2 != "nofacet2") {
       yaxis_text <- 'if'(is.na(fv2),
                          paste0("NA<br>", Index),
@@ -546,8 +567,8 @@ plotAlpha <- function(aggdat, level,
       if (nrow(sp) == 0) {
         return(buildEmptyPlotlyPlot(xaxis_text, ylab))
       }
-     sp <- sp %>%
-       dplyr::mutate(colorfact = as.factor(get(col_by)))
+      sp <- sp %>%
+        dplyr::mutate(colorfact = as.factor(get(col_by)))
       present_levels <- unique(sp$colorfact)
       showL <- FALSE
       if(any(present_levels %in% collevels))
@@ -565,7 +586,7 @@ plotAlpha <- function(aggdat, level,
         add_plotly_layout(plotTitle = plotTitle, 
                           xaxis_text = xaxis_text, 
                           ylab = yaxis_text)
-      ## using global environment assignment as we are substituting in place until empty
+      ## using global environment assignment as we are substituting in place 
       collevels <<- collevels[!collevels %in% present_levels]
       sp
     })
@@ -574,7 +595,7 @@ plotAlpha <- function(aggdat, level,
   })
   
   p <- plotly::subplot(plotlist, nrows = length(plotlist), 
-               shareY = FALSE, titleX = TRUE, titleY = TRUE) %>%
+                       shareY = FALSE, titleX = TRUE, titleY = TRUE) %>%
     plotly::layout(showlegend = TRUE,
                    colorway = getOption("me.colorvalues")) %>%
     add_plotly_config()

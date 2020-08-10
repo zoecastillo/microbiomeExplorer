@@ -8,53 +8,61 @@
 #' 
 #'
 #' @return row containing the UI elements
-#'
-#' @export
 diffTableUI <- function(id) {
   ns <- NS(id)
   
   fluidRow(
-    box(title = "DIFFERENTIAL ANALYSIS", solidHeader = TRUE, 
-        collapsible = TRUE, width = 12,
-        fluidRow(
-          column(width = 1),
-          column(width = 10,
-                 div(id = ns("downloaddiv"),
-                     shinyjs::hidden(downloadButton(ns("download_button"),
-                                                    "Download")),
-                     DT::DTOutput(ns("diffdatatable"), width = "100%")
-                 )
+    box(
+      title = "DIFFERENTIAL ANALYSIS", solidHeader = TRUE, 
+      collapsible = TRUE, width = 12,
+      fluidRow(
+        column(width = 1),
+        column(
+          width = 10,
+          div(
+            id = ns("downloaddiv"),
+            shinyjs::hidden(
+              downloadButton(
+                ns("download_button"),
+                "Download")),
+            DT::DTOutput(
+              ns("diffdatatable"), width = "100%")
           )
         )
+      )
     ),
     box(width = 12,
         fluidRow(
           column(width = 1),
-          column(width = 10,
-                 plotly::plotlyOutput(ns("clickedFeature"), 
-                                      width = "100%", height = "100%"),
-                 br(),
-                 shinyjs::disabled(shinyWidgets::dropdownButton(tags$h3("Plot Options"),
-                                                                shinyWidgets::switchInput(
-                                                    inputId = ns("sP"),
-                                                    label = "Show Points",
-                                                    size = "mini",
-                                                    labelWidth = "80px"
-                                                  ),
-                                                  shinyWidgets::switchInput(
-                                                    inputId = ns("logS"),
-                                                    label = "Log Scale",
-                                                    value = TRUE,
-                                                    size = "mini",
-                                                    labelWidth = "80px"
-                                                  ),
-                                                  circle = FALSE, 
-                                                  status = "danger", 
-                                                  icon = icon("gear"), 
-                                                  width = "300px",
-                                                  label = "Plot Options",
-                                                  inputId = ns("optionbutton")
-                 ))
+          column(
+            width = 10,
+            plotly::plotlyOutput(
+              ns("clickedFeature"), 
+              width = "100%", height = "100%"),
+            br(),
+            shinyjs::disabled(
+              shinyWidgets::dropdownButton(
+                tags$h3("Plot Options"),
+                shinyWidgets::switchInput(
+                  inputId = ns("sP"),
+                  label = "Show Points",
+                  size = "mini",
+                  labelWidth = "80px"
+                ),
+                shinyWidgets::switchInput(
+                  inputId = ns("logS"),
+                  label = "Log Scale",
+                  value = TRUE,
+                  size = "mini",
+                  labelWidth = "80px"
+                ),
+                circle = FALSE, 
+                status = "danger", 
+                icon = icon("gear"), 
+                width = "300px",
+                label = "Plot Options",
+                inputId = ns("optionbutton")
+              ))
           )
         )
     )
@@ -78,8 +86,6 @@ diffTableUI <- function(id) {
 #' @import metagenomeSeq
 #' 
 #' @return list containing R code for analysis and for feature plots
-#'
-#' @export
 diffTable <- function(input, output, session, 
                       aggDat, featLevel, diffSettings, 
                       reset, normalized) {
@@ -145,9 +151,9 @@ diffTable <- function(input, output, session,
         showModal(modalDialog(
           title = "DeSeq2 Issue",
           "DeSeq2 uses make.names() on the comparison phenotypes.\n 
-                The chosen values lead to non-unique values. \n
-                Please update the phenotable for this project in order
-                to run DeSeq2 differential analysis using the selected comparison levels.",
+           The chosen values lead to non-unique values. \n
+           Please update the phenotable for this project in order to run DeSeq2 
+           differential analysis using the selected comparison levels.",
           easyClose = TRUE
         ))
         return(NULL)
@@ -252,8 +258,8 @@ diffTable <- function(input, output, session,
   output$download_button <- downloadHandler(
     filename = function() {
       gsub(" ","",paste0(diffSettings()$phenolevel1,
-            "_vs_",
-            diffSettings()$phenolevel2, "_", Sys.Date(), ".csv"))
+                         "_vs_",
+                         diffSettings()$phenolevel2, "_", Sys.Date(), ".csv"))
     },
     content = function(file) {
       readr::write_csv(diffResults(), file)
@@ -264,13 +270,13 @@ diffTable <- function(input, output, session,
   observeEvent(input$sP, {
     req(input$diffdatatable_rows_selected, diffResults(), aggDat(), 
         featLevel(), diffSettings())
-    featListRep(sapply(featListRep(), 
+    featListRep(vapply(featListRep(), 
                        function(f){
                          gsub("showPoints = [A-Z].+",
                               paste0("showPoints = ", input$sP, ")"),f)
-                         })
+                       }, character(1))
                 
-                )
+    )
     showPoints <- 'if'(input$sP, "all", FALSE)
     plotly::plotlyProxy("clickedFeature", session) %>%
       plotly::plotlyProxyInvoke(
@@ -278,8 +284,8 @@ diffTable <- function(input, output, session,
         list(boxpoints = showPoints)
       )
   })
-
-
+  
+  
   observeEvent(plotHeight(), {
     req(input$diffdatatable_rows_selected, diffResults(), aggDat(), 
         featLevel(), diffSettings())
@@ -289,8 +295,8 @@ diffTable <- function(input, output, session,
         list(height = plotHeight())
       )
   },ignoreInit = TRUE)
-
-
+  
+  
   ## renders a plot if datatable rows is clicked and stores results for report
   output$clickedFeature <- plotly::renderPlotly({
     req(input$diffdatatable_rows_selected, diffResults(), 
@@ -308,6 +314,7 @@ diffTable <- function(input, output, session,
             paste0("#' ### Feature plot"),
             paste0("", "#- fig.width = 7"),
             paste0("plotSingleFeature(aggDat,"),
+            paste0("\tplotTitle = \"",diffResults()[i, featLevel()], "\","),
             paste0("\tfeature = \"", 
                    diffResults()[i, featLevel()], "\","),
             paste0("\tx_var = \"", 
@@ -333,7 +340,7 @@ diffTable <- function(input, output, session,
                      diffSettings()$phenolevel2)
       )
     })
-
+    
     plotly::subplot(plotList, nrows = numofrows, 
                     margin = 0.1, titleY = TRUE, titleX = TRUE) %>%
       plotly::layout(showlegend = FALSE)

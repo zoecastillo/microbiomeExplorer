@@ -6,9 +6,6 @@
 #' @author Janina Reeder
 #'
 #' @return box containing the UI elements
-#' 
-#' 
-#' @export
 featureCorrUI <- function(id) {
     ns <- NS(id)
     
@@ -16,47 +13,50 @@ featureCorrUI <- function(id) {
         collapsible = TRUE, width = 12,
         fluidRow(
             column(width = 11,
-                   shinycssloaders::withSpinner(plotly::plotlyOutput(ns("featcorrplot"), 
-                                                    width = "auto", 
-                                                    height = "auto"),
-                               type = 3, color = "#424242", 
-                               color.background = "#fdfdfc"),
+                   shinycssloaders::withSpinner(
+                       plotly::plotlyOutput(
+                           ns("featcorrplot"), 
+                           width = "auto", 
+                           height = "auto"),
+                       type = 3, color = "#424242", 
+                       color.background = "#fdfdfc"),
                    br(),
                    shinyjs::disabled(
-                       shinyWidgets::dropdownButton(tags$h3("Plot Options"),
-                                      selectInput(
-                                          inputId = ns("fcol"),
-                                          label = "Color by",
-                                          choices = ""
-                                      ),
-                                      shinyWidgets::switchInput(
-                                          inputId = ns("logS"),
-                                          label = "Log Scale",
-                                          value = TRUE,
-                                          size = "mini",
-                                          labelWidth = "120px"
-                                      ),
-                                      shinyWidgets::switchInput(
-                                          inputId = ns("regL"),
-                                          label = "Regression Line",
-                                          value = TRUE,
-                                          size = "mini",
-                                          labelWidth = "120px"
-                                      ),
-                                      sliderInput(
-                                          inputId = ns("plotWidth"),
-                                          label = "Adjust plot width",
-                                          value = 550,
-                                          min = 250,
-                                          max = 1600,
-                                          round = TRUE
-                                      ),
-                                      circle = FALSE, 
-                                      status = "danger", 
-                                      icon = icon("gear"), 
-                                      width = "300px",
-                                      label = "Plot Options",
-                                      inputId = ns("optionbutton")
+                       shinyWidgets::dropdownButton(
+                           tags$h3("Plot Options"),
+                           selectInput(
+                               inputId = ns("fcol"),
+                               label = "Color by",
+                               choices = ""
+                           ),
+                           shinyWidgets::switchInput(
+                               inputId = ns("logS"),
+                               label = "Log Scale",
+                               value = TRUE,
+                               size = "mini",
+                               labelWidth = "120px"
+                           ),
+                           shinyWidgets::switchInput(
+                               inputId = ns("regL"),
+                               label = "Regression Line",
+                               value = TRUE,
+                               size = "mini",
+                               labelWidth = "120px"
+                           ),
+                           sliderInput(
+                               inputId = ns("plotWidth"),
+                               label = "Adjust plot width",
+                               value = 550,
+                               min = 250,
+                               max = 1600,
+                               round = TRUE
+                           ),
+                           circle = FALSE, 
+                           status = "danger", 
+                           icon = icon("gear"), 
+                           width = "300px",
+                           label = "Plot Options",
+                           inputId = ns("optionbutton")
                        ))
             )
         ),
@@ -86,9 +86,6 @@ featureCorrUI <- function(id) {
 #' 
 #' @author Janina Reeder
 #' @return R code used to do the correlation analysis (character)
-#' 
-#' 
-#' @export
 featureCorr <- function(input, output, session,
                         aggDat,
                         colorOptions,
@@ -132,7 +129,7 @@ featureCorr <- function(input, output, session,
     observe({
         width(input$plotWidth)
     })
-
+    
     observeEvent(width(), {
         req(corPlot())
         plotly::plotlyProxy("featcorrplot", session) %>%
@@ -170,30 +167,37 @@ featureCorr <- function(input, output, session,
         ## main function to perform feature-feature correlation
         withProgress({
             cf <- corrFeature(aggDat(),
-                             feat1 = corFeatBase(),
-                             feat2 = corFeat2(),
-                             log = input$logS,
-                             facet1 = corFacet1(),
-                             facet2 = corFacet2(),
-                             method = corMethod(),
-                             addRegression = input$regL,
-                             plotTitle = plotTitle,
-                             col_by = color
+                              feat1 = corFeatBase(),
+                              feat2 = corFeat2(),
+                              log = input$logS,
+                              facet1 = corFacet1(),
+                              facet2 = corFacet2(),
+                              method = corMethod(),
+                              addRegression = input$regL,
+                              plotTitle = plotTitle,
+                              col_by = color
             )
             corPlot(cf$plot)
             setProgress(0.9)
             
-            statsframe <- dplyr::bind_rows(lapply(names(cf$stats), function(n) {
-                s <- cf$stats[[n]]
-                list(
-                    "facet" = n,
-                    "method" = corMethod(),
-                    "estimate" = round(s$estimate, getOption("me.round_digits")),
-                    "p" = round(s$p.value, getOption("me.round_digits")),
-                    "lower CI" = round(s$lower, getOption("me.round_digits")),
-                    "upper CI" = round(s$upper, getOption("me.round_digits"))
-                )
-            }))
+            statsframe <- dplyr::bind_rows(
+                lapply(
+                    names(cf$stats), 
+                    function(n) {
+                        s <- cf$stats[[n]]
+                        list(
+                            "facet" = n,
+                            "method" = corMethod(),
+                            "estimate" = round(s$estimate, 
+                                               getOption("me.round_digits")),
+                            "p" = round(s$p.value, 
+                                        getOption("me.round_digits")),
+                            "lower CI" = round(s$lower, 
+                                               getOption("me.round_digits")),
+                            "upper CI" = round(s$upper, 
+                                               getOption("me.round_digits"))
+                        )
+                    }))
         }, message = "Analyzing correlation ...")
         
         ## code needed to do the analysis
@@ -206,15 +210,15 @@ featureCorr <- function(input, output, session,
             paste0("\tlog = ", input$logS, ","),
             paste0(
                 "\tfacet1 = ", 'if'(is.null(corFacet1()),
-                                      "NULL",
-                                      paste0("\"", corFacet1(), "\"")
+                                    "NULL",
+                                    paste0("\"", corFacet1(), "\"")
                 ),
                 ","
             ),
             paste0(
                 "\tfacet2 = ", 'if'(is.null(corFacet2()),
-                                      "NULL",
-                                      paste0("\"", corFacet2(), "\"")
+                                    "NULL",
+                                    paste0("\"", corFacet2(), "\"")
                 ),
                 ","
             ),
@@ -222,8 +226,8 @@ featureCorr <- function(input, output, session,
             paste0("\taddRegression = ", input$regL, ","),
             paste0("\tplotTitle = \"", plotTitle, "\","),
             paste0("\tcol_by = ", 'if'(is.null(color), 
-                                         "NULL", 
-                                         paste0("\"", color, "\"")),","),
+                                       "NULL", 
+                                       paste0("\"", color, "\"")),","),
             paste0("\tallowWebGL = FALSE)\n\n"),
             paste0("cf$plot"),
             paste0("\n\n"),
@@ -287,8 +291,6 @@ featureCorr <- function(input, output, session,
 #' @author Janina Reeder
 #'
 #' @return box containing the UI element
-#'
-#' @export
 phenotypeCorrUI <- function(id) {
     ns <- NS(id)
     
@@ -297,44 +299,46 @@ phenotypeCorrUI <- function(id) {
         fluidRow(
             column(
                 width = 11,
-                shinycssloaders::withSpinner(plotly::plotlyOutput(ns("phenocorrplot"), 
-                                                 width = "auto", 
-                                                 height = "auto"),
-                            type = 3, color = "#424242", color.background = "#fdfdfc"),
+                shinycssloaders::withSpinner(
+                    plotly::plotlyOutput(ns("phenocorrplot"), 
+                                         width = "auto", 
+                                         height = "auto"),
+                    type = 3, color = "#424242", color.background = "#fdfdfc"),
                 br(),
                 shinyjs::disabled(
-                    shinyWidgets::dropdownButton(tags$h3("Plot Options"),
-                                   selectInput(
-                                       inputId = ns("pcol"),
-                                       label = "Color by",
-                                       choices = ""
-                                   ),
-                                   shinyWidgets::switchInput(
-                                       inputId = ns("logS"),
-                                       label = "Log Scale",
-                                       value = TRUE,
-                                       size = "mini",
-                                       labelWidth = "120px"
-                                   ),
-                                   shinyWidgets::switchInput(
-                                       inputId = ns("regL"),
-                                       label = "Regression line",
-                                       value = TRUE,
-                                       size = "mini",
-                                       labelWidth = "120px"
-                                   ),
-                                   sliderInput(
-                                       inputId = ns("plotWidth"),
-                                       label = "Adjust plot width",
-                                       value = 550,
-                                       min = 250,
-                                       max = 1600,
-                                       round = TRUE
-                                   ),
-                                   circle = FALSE, status = "danger", 
-                                   icon = icon("gear"), width = "300px",
-                                   label = "Plot Options",
-                                   inputId = ns("optionbutton")
+                    shinyWidgets::dropdownButton(
+                        tags$h3("Plot Options"),
+                        selectInput(
+                            inputId = ns("pcol"),
+                            label = "Color by",
+                            choices = ""
+                        ),
+                        shinyWidgets::switchInput(
+                            inputId = ns("logS"),
+                            label = "Log Scale",
+                            value = TRUE,
+                            size = "mini",
+                            labelWidth = "120px"
+                        ),
+                        shinyWidgets::switchInput(
+                            inputId = ns("regL"),
+                            label = "Regression line",
+                            value = TRUE,
+                            size = "mini",
+                            labelWidth = "120px"
+                        ),
+                        sliderInput(
+                            inputId = ns("plotWidth"),
+                            label = "Adjust plot width",
+                            value = 550,
+                            min = 250,
+                            max = 1600,
+                            round = TRUE
+                        ),
+                        circle = FALSE, status = "danger", 
+                        icon = icon("gear"), width = "300px",
+                        label = "Plot Options",
+                        inputId = ns("optionbutton")
                     ))
             )
         ),
@@ -367,8 +371,6 @@ phenotypeCorrUI <- function(id) {
 #' 
 #' @author Janina Reeder
 #' @return R code used to do the correlation analysis (character)
-#'
-#' @export
 phenotypeCorr <- function(input, output, session,
                           aggDat,
                           colorOptions,
@@ -449,30 +451,37 @@ phenotypeCorr <- function(input, output, session,
         ## main function to perform feature-phenotype correlation
         withProgress({
             cp <- corrPhenotype(aggDat(),
-                               feature = corFeatBase(),
-                               phenotype = corPheno(),
-                               log = input$logS,
-                               facet1 = corFacet1(),
-                               facet2 = corFacet2(),
-                               method = corMethod(),
-                               addRegression = input$regL,
-                               plotTitle = plotTitle,
-                               col_by = color
+                                feature = corFeatBase(),
+                                phenotype = corPheno(),
+                                log = input$logS,
+                                facet1 = corFacet1(),
+                                facet2 = corFacet2(),
+                                method = corMethod(),
+                                addRegression = input$regL,
+                                plotTitle = plotTitle,
+                                col_by = color
             )
             corPlot(cp$plot)
             setProgress(0.9)
             
-            statsframe <- dplyr::bind_rows(lapply(names(cp$stats), function(n) {
-                s <- cp$stats[[n]]
-                list(
-                    "facet" = n,
-                    "method" = corMethod(),
-                    "estimate" = round(s$estimate, getOption("me.round_digits")),
-                    "p" = round(s$p.value, getOption("me.round_digits")),
-                    "lower CI" = round(s$lower, getOption("me.round_digits")),
-                    "upper CI" = round(s$upper, getOption("me.round_digits"))
-                )
-            }))
+            statsframe <- dplyr::bind_rows(
+                lapply(
+                    names(cp$stats), 
+                    function(n) {
+                        s <- cp$stats[[n]]
+                        list(
+                            "facet" = n,
+                            "method" = corMethod(),
+                            "estimate" = round(s$estimate, 
+                                               getOption("me.round_digits")),
+                            "p" = round(s$p.value, 
+                                        getOption("me.round_digits")),
+                            "lower CI" = round(s$lower, 
+                                               getOption("me.round_digits")),
+                            "upper CI" = round(s$upper, 
+                                               getOption("me.round_digits"))
+                        )
+                    }))
             corStats(statsframe)
         }, message = "Analyzing correlation ...")
         
@@ -486,15 +495,15 @@ phenotypeCorr <- function(input, output, session,
             paste0("\tlog = ", input$logS, ","),
             paste0(
                 "\tfacet1 = ", 'if'(is.null(corFacet1()),
-                                      "NULL",
-                                      paste0("\"", corFacet1(), "\"")
+                                    "NULL",
+                                    paste0("\"", corFacet1(), "\"")
                 ),
                 ","
             ),
             paste0(
                 "\tfacet2 = ", 'if'(is.null(corFacet2()),
-                                      "NULL",
-                                      paste0("\"", corFacet2(), "\"")
+                                    "NULL",
+                                    paste0("\"", corFacet2(), "\"")
                 ),
                 ","
             ),
@@ -502,7 +511,7 @@ phenotypeCorr <- function(input, output, session,
             paste0("\taddRegression = ", input$regL, ","),
             paste0("\tplotTitle = \"", plotTitle, "\","),
             paste0("\tcol_by = ", 'if'(is.null(color), "NULL", 
-                                         paste0("\"", color, "\"")),","),
+                                       paste0("\"", color, "\"")),","),
             paste0("\tallowWebGL = FALSE)\n\n"),
             paste0("cp$plot"),
             paste0("\n\n"),

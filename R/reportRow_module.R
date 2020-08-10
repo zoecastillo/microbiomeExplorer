@@ -6,11 +6,9 @@
 #' 
 #' @author Janina Reeder
 #' @return div holding the UI code
-#'
-#' @export
 reportRowUI <- function(id, type) {
     ns <- NS(id)
-
+    
     div(
         fluidRow(
             width = 11, id = "reportrow",
@@ -30,7 +28,8 @@ reportRowUI <- function(id, type) {
             ),
             column(
                 width = 4,
-                plotOutput(ns("reportImage"), height = "175px", width = "175px")
+                plotOutput(
+                    ns("reportImage"), height = "175px", width = "175px")
             ),
             column(width = 1),
             column(
@@ -53,11 +52,9 @@ reportRowUI <- function(id, type) {
 #' 
 #' @author Janina Reeder
 #' @return reactive boolean indicating whether row is selected
-#'
-#' @export
 reportRow <- function(input, output, session, type, content) {
     ns <- session$ns
-
+    
     ## preprocess code to only display relevant parts
     codecontent <- reactive({
         req(content())
@@ -66,33 +63,42 @@ reportRow <- function(input, output, session, type, content) {
         })
         cc[cc != ""]
     })
-
+    
     ## determine which icon to show
     imagename <- reactive({
         req(codecontent())
-        if (stringr::str_starts(codecontent()[1], "makeQCPlot")) {
+        if (stringr::str_starts(codecontent()[1], 
+                                "makeQCPlot")) {
             "qcpic"
-        } else if (stringr::str_starts(codecontent()[1], "plotSingleFeature")) {
+        } else if (stringr::str_starts(codecontent()[1], 
+                                       "plotSingleFeature")) {
             "featplot"
-        } else if (stringr::str_starts(codecontent()[1], "plotAbundance")) {
+        } else if (stringr::str_starts(codecontent()[1], 
+                                       "plotAbundance")) {
             "relAb"
-        } else if (stringr::str_starts(codecontent()[1], "plotAlpha")) {
+        } else if (stringr::str_starts(codecontent()[1], 
+                                       "plotAlpha")) {
             "alphadiv"
-        } else if (stringr::str_starts(codecontent()[1], "plotHeatmap")) {
+        } else if (stringr::str_starts(codecontent()[1], 
+                                       "plotHeatmap")) {
             "heatmap"
-        } else if (stringr::str_starts(codecontent()[1], "distMat")) {
+        } else if (stringr::str_starts(codecontent()[1], 
+                                       "distMat")) {
             "betadiv"
-        } else if (stringr::str_starts(codecontent()[1], "c[fp]")) {
+        } else if (stringr::str_starts(codecontent()[1], 
+                                       "c[fp]")) {
             "correlation"
-        } else if (stringr::str_starts(codecontent()[1], "diff")) {
+        } else if (stringr::str_starts(codecontent()[1], 
+                                       "diff")) {
             "difftest"
-        } else if (stringr::str_starts(codecontent()[1], "plotLongFeature")) {
+        } else if (stringr::str_starts(codecontent()[1], 
+                                       "plotLongFeature")) {
             "longitudinal"
         } else {
             "blank"
         }
     })
-
+    
     ## render the icon
     output$reportImage <- renderImage({
         req(imagename())
@@ -100,7 +106,7 @@ reportRow <- function(input, output, session, type, content) {
             "www/",
             paste(imagename(), ".png", sep = "")
         ))
-
+        
         # Return a list containing the filename
         list(
             src = filename,
@@ -108,7 +114,7 @@ reportRow <- function(input, output, session, type, content) {
             height = "175px"
         )
     }, deleteFile = FALSE)
-
+    
     ## render the code sections
     output$reportText <- renderUI({
         req(codecontent())
@@ -116,6 +122,6 @@ reportRow <- function(input, output, session, type, content) {
             class = "reportDivBox"
         )
     })
-
+    
     return(input$includeCheck)
 }

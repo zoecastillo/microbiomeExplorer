@@ -17,6 +17,12 @@ modified featurerow
 Helper function which rolls down annotated from closest higher order with 
 annotation
 }
+\examples{
+data("mouseData", package = "metagenomeSeq")
+featrow <- fData(mouseData)[5,]
+rollDownFeatures(featrow)
+
+}
 \author{
 Janina Reeder
 }

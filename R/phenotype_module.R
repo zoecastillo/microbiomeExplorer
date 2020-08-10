@@ -7,6 +7,9 @@
 #' @author Janina Reeder
 #'
 #' @return fluidRow holding the ui code
+#' 
+#' @examples phenotypeTableUI("phenotype_id")
+#' 
 #' @export
 phenotypeTableUI <- function(id) {
   ns <- NS(id)
@@ -14,65 +17,80 @@ phenotypeTableUI <- function(id) {
   fluidRow(
     column(width = 3, id = ns("phenointeractioncol"),
            h4("COMBINE PHENOTYPE COLUMNS"),
-           selectInput(ns("pheno1"),
-                       label = "Phenotype 1",
-                       choices = "", multiple = FALSE, selectize = FALSE, 
-                       width = "250px"),
-           selectInput(ns("pheno2"),
-                       label = "Phenotype 2",
-                       choices = "", multiple = FALSE, selectize = FALSE, 
-                       width = "250px"),
-           textInput(ns("interactionname"),
-                     label = "Column Name",
-                     value = "", width = "250px"),
+           selectInput(
+             ns("pheno1"),
+             label = "Phenotype 1",
+             choices = "", multiple = FALSE, selectize = FALSE, 
+             width = "250px"),
+           selectInput(
+             ns("pheno2"),
+             label = "Phenotype 2",
+             choices = "", multiple = FALSE, selectize = FALSE, 
+             width = "250px"),
+           textInput(
+             ns("interactionname"),
+             label = "Column Name",
+             value = "", width = "250px"),
            fluidRow(
              width = 12, id = "actionbuttonrow",
-             actionButton(ns("createbutton"), 
-                          icon = icon("fas fa-plus"),
-                          label = HTML("&nbsp;ADD"), width = "100px"),
-             actionButton(ns("savebutton"), 
-                          icon = icon("far fa-save"),
-                          label = HTML("&nbsp;SAVE"), width = "100px")
+             actionButton(
+               ns("createbutton"), 
+               icon = icon("fas fa-plus"),
+               label = HTML("&nbsp;ADD"), width = "100px"),
+             actionButton(
+               ns("savebutton"), 
+               icon = icon("far fa-save"),
+               label = HTML("&nbsp;SAVE"), width = "100px")
            ),
            br(),
-           box(width = 12,
-               title = "ADJUST DATATYPES (optional)",
-               selectInput(ns("phenotype"),
-                           label = "Adjust Phenotype",
-                           choices = "", multiple = FALSE, selectize = FALSE, 
-                           width = "250px"),
-               selectInput(ns("phenodatatype"),
-                           label = "Change data type",
-                           choices = "", multiple = FALSE, selectize = FALSE, 
-                           width = "250px"),
-               fluidRow(
-                 width = 12, id = "actionbuttonrow2",
-                 actionButton(ns("changebutton"), 
-                              icon("fas fa-exchange-alt"),
-                              label = HTML("&nbsp;ADJUST"), width = "90px"),
-                 actionButton(ns("savebutton2"),
-                              icon = icon("far fa-save"),
-                              label = HTML("&nbsp;SAVE"), width = "90px")
-               ),
-               collapsed = TRUE,
-               collapsible = TRUE
+           box(
+             width = 12,
+             title = "ADJUST DATATYPES (optional)",
+             selectInput(
+               ns("phenotype"),
+               label = "Adjust Phenotype",
+               choices = "", multiple = FALSE, selectize = FALSE, 
+               width = "250px"),
+             selectInput(
+               ns("phenodatatype"),
+               label = "Change data type",
+               choices = "", multiple = FALSE, selectize = FALSE, 
+               width = "250px"),
+             fluidRow(
+               width = 12, id = "actionbuttonrow2",
+               actionButton(
+                 ns("changebutton"), 
+                 icon("fas fa-exchange-alt"),
+                 label = HTML("&nbsp;ADJUST"), width = "90px"),
+               actionButton(
+                 ns("savebutton2"),
+                 icon = icon("far fa-save"),
+                 label = HTML("&nbsp;SAVE"), width = "90px")
+             ),
+             collapsed = TRUE,
+             collapsible = TRUE
            )
     ),
-    column(width = 9,
-           box(width = 10,
-               h2("PHENOTYPE INFORMATION"),
-               p("Create new interaction phenotypes by combining two columns and adjust column data 
-                   types if needed. New phenotype information can be added via \"Load & 
-                   Filter\" tab. Table settings allow paging through sections of the data, 
-                   choosing how many entries to display or searching for specific entries.
-                Modifications must be saved in order to be available in the analysis sections.")
-           ),
-           box(width = 12, 
-               div(id = ns("downloaddiv"),
-                   downloadButton(ns("download_button"),"Download"),
-                   DT::DTOutput(ns("phenodatatable"), width = "100%")
-               )
-           )
+    column(
+      width = 9,
+      box(
+        width = 10,
+        h2("PHENOTYPE INFORMATION"),
+        p("Create new interaction phenotypes by combining two columns and adjust  
+         column data types if needed. New phenotype information can be added  
+         via \"Load & Filter\" tab. Table settings allow paging through sections
+          of the data, choosing how many entries to display or searching for 
+         specific entries.Modifications must be saved in order to be available 
+         in the analysis sections.")
+      ),
+      box(
+        width = 12, 
+        div(
+          id = ns("downloaddiv"),
+          downloadButton(ns("download_button"),"Download"),
+          DT::DTOutput(ns("phenodatatable"), width = "100%")
+        )
+      )
     )
   )
 }
@@ -142,12 +160,12 @@ getPhenoChanges <- function(phenotype, datatype){
 #' @param phenoModRep reactive Value storing any phenotable modifications made
 #' @param addPheno reactive boolean keeping track of pheno data modifications
 #'
+#' @return phenotype table server fragment - no return value
+#'
 #' @author Janina Reeder
 #' 
 #' @importFrom Biobase pData
 #' @importFrom rlang :=
-#'
-#' @export
 phenotypeTable <- function(input, output, session, meData, 
                            phenoModRep, addPheno) {
   ns <- session$ns
@@ -337,9 +355,9 @@ phenotypeTable <- function(input, output, session, meData,
     )
   })
   
-
-
-
+  
+  
+  
   output$download_button <- downloadHandler(
     filename = function() {
       paste0("phenodata-", Sys.Date(), ".csv")

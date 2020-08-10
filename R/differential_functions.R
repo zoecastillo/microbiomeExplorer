@@ -13,9 +13,9 @@ designPairs <- function(levels) {
   n <- length(levels)
   design <- matrix(0, n, choose(n, 2))
   rownames(design) <- levels
-  colnames(design) <- 1:choose(n, 2)
+  colnames(design) <- seq_len(choose(n, 2))
   k <- 0
-  for (i in 1:(n - 1)) {
+  for (i in seq_len(n - 1)) {
     for (j in (i + 1):n) {
       k <- k + 1
       design[j, k] <- 1
@@ -63,11 +63,21 @@ designPairs <- function(levels) {
 #' @importFrom Biobase pData
 #' 
 #' @return data.frame holding results of the differential analysis
+#' 
+#' @examples 
+#' data("mouseData", package = "metagenomeSeq")
+#' aggdat <- aggFeatures(mouseData, level = "genus")
+#' runDiffTest(aggdat = aggdat,level = "genus", 
+#'             phenotype = "diet", method = "Kruskal-Wallis")
 #'
 #' @export
-runDiffTest <- function(aggdat, level, phenotype, phenolevels = NULL,
+runDiffTest <- function(
+  aggdat, level, phenotype, phenolevels = NULL,
                         log = TRUE, coef = NULL,
-                        method = c("limma", "Kruskal-Wallis", "ZILN", "DESeq2")) {
+                        method = c("limma", 
+                                   "Kruskal-Wallis", 
+                                   "ZILN", 
+                                   "DESeq2")) {
   phenoTable <- pData(aggdat)
   method <- match.arg(method)
   
@@ -113,17 +123,24 @@ runDiffTest <- function(aggdat, level, phenotype, phenolevels = NULL,
                                           colData = phenoTypeDF, 
                                           design = mod)
     dds <- DESeq2::estimateSizeFactors(object = dds, type = "poscounts")
-    dds <- DESeq2::DESeq(dds, fitType = "parametric", test = "Wald", quiet = TRUE)
-    out <- DESeq2::results(dds, independentFiltering = FALSE, cooksCutoff = FALSE)
+    dds <- DESeq2::DESeq(
+      dds, 
+      fitType = "parametric", 
+      test = "Wald", 
+      quiet = TRUE)
+    out <- DESeq2::results(
+      dds, 
+      independentFiltering = FALSE, 
+      cooksCutoff = FALSE)
   } else if (method == "ZILN") {
-    good.ind <- which(rowSums(design[, 1:2]) == 1)
+    good.ind <- which(rowSums(design[, c(1,2)]) == 1)
     ## app requires selection of specific phenolevels instead
     if (length(levels(pd)) > 2) {
       warning("Only using first two levels of phenotype")
     }
     design2 <- stats::model.matrix(~pd)
     fit <- fitFeatureModel(aggdat[, good.ind],
-                           mod = design2[good.ind, 1:2],
+                           mod = design2[good.ind, c(1,2)],
                            spos = FALSE
     )
     out <- MRtable(fit, group = 3, number = Inf)
@@ -135,7 +152,7 @@ runDiffTest <- function(aggdat, level, phenotype, phenolevels = NULL,
     out <- limma::topTable(fit2, coef = coef, adjust = "BH", number = Inf)
     
     if (is.null(coef)) {
-      colnames(out)[1:ncol(contrast.matrix)] <- 
+      colnames(out)[seq_len(ncol(contrast.matrix))] <- 
         colnames(contrast.matrix)
     } else {
       colnames(out)[1] <- colnames(contrast.matrix)[coef]
@@ -148,9 +165,9 @@ runDiffTest <- function(aggdat, level, phenotype, phenolevels = NULL,
     fit2 <- limma::eBayes(fit2)
     out <- limma::topTable(fit2, coef = coef, adjust = "BH", number = Inf)
     
-    colnames(out)[1:ncol(contrast.matrix)] <- colnames(contrast.matrix)
-    kw <- base::apply(aggmat, 1, 
-                      function(x) broom::tidy(stats::kruskal.test(x, pd)))
+    colnames(out)[seq_len(ncol(contrast.matrix))] <- colnames(contrast.matrix)
+    kw <- base::apply(
+      aggmat, 1, function(x) broom::tidy(stats::kruskal.test(x, pd)))
     ## bind together and add row names
     kw.df <- dplyr::bind_rows(kw)
     kw.df$names <- names(kw)

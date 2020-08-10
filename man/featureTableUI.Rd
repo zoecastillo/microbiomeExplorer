@@ -15,6 +15,10 @@ fluidRow containing the UI code for feature tables
 \description{
 Feature table UI module
 }
+\examples{
+featureTableUI("feature_id")
+
+}
 \author{
 Janina Reeder
 }

@@ -21,3 +21,8 @@ Aggregated MRexperiment object or matrix depending on \code{out}.
 This function aggregates counts by a level specified in the featureData slot
 of the MRexperiment object.
 }
+\examples{
+data("mouseData", package = "metagenomeSeq")
+aggFeatures(mouseData, level = "genus")
+
+}

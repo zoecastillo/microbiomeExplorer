@@ -15,6 +15,10 @@ fluidRow holding the ui code
 \description{
 Phenotype table UI module
 }
+\examples{
+phenotypeTableUI("phenotype_id")
+
+}
 \author{
 Janina Reeder
 }

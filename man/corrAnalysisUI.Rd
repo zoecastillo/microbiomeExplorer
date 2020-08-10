@@ -15,6 +15,10 @@ fluidRow containing the ui code
 \description{
 corr Analysis Module - UI
 }
+\examples{
+corrAnalysisUI("coranalysis_id")
+
+}
 \author{
 Janina Reeder
 }

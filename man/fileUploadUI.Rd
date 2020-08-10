@@ -10,6 +10,9 @@ fileUploadUI(id)
 \arguments{
 \item{id}{module identifier}
 }
+\value{
+div holding ui elements
+}
 \description{
 Module handling file upload for the application: UI
 In a deployed version this module should be replaced with database access

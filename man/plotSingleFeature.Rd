@@ -8,7 +8,7 @@ plotSingleFeature(
   aggdat,
   feature = "other",
   x_var = "SAMPLE_ID",
-  ind = 1:10,
+  ind = seq_len(10),
   plotTitle = NULL,
   ylab = "Reads",
   xlab = NULL,
@@ -51,8 +51,17 @@ appropriate color}
 
 \item{pwidth}{overall plot width; default is 650}
 }
+\value{
+plotly plot object
+}
 \description{
 This function plots the reads of a particular feature or set of features.
+}
+\examples{
+data("mouseData", package = "metagenomeSeq")
+aggdat <- aggFeatures(mouseData, level = "genus")
+plotSingleFeature(aggdat, feature = "Prevotella", x_var = "diet")
+
 }
 \author{
 Janina Reeder

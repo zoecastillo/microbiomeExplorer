@@ -7,6 +7,13 @@
 #' @author Janina Reeder
 #'
 #' @return modified featcol
+#' 
+#' @examples 
+#' data("mouseData", package = "metagenomeSeq")
+#' featcol <- fData(mouseData)[["genus"]]
+#' featcol[featcol == "NA"] <- NA
+#' replaceWithUnknown(featcol)
+#' 
 #' @export
 replaceWithUnknown <- function(featcol) {
     featcol <- stringr::str_replace_na(featcol, replacement = "unknown")
@@ -23,6 +30,12 @@ replaceWithUnknown <- function(featcol) {
 #' @author Janina Reeder
 #'
 #' @return modified featurerow
+#' 
+#' @examples 
+#' data("mouseData", package = "metagenomeSeq")
+#' featrow <- fData(mouseData)[5,]
+#' rollDownFeatures(featrow)
+#' 
 #' @export
 rollDownFeatures <- function(featrow) {
     featrow <- stringr::str_replace_na(t(featrow), replacement = "NA")
@@ -43,39 +56,52 @@ rollDownFeatures <- function(featrow) {
 #' @author Janina Reeder
 #'
 #' @return fluidRow containing the UI code for feature tables
+#' 
+#' @examples featureTableUI("feature_id")
+#' 
 #' @export
 featureTableUI <- function(id) {
     ns <- NS(id)
-
+    
     fluidRow(
-        column(width = 3, id = ns("featannocol"),
+        column(
+            width = 3, id = ns("featannocol"),
             h4("ANNOTATE BLANK VALUES"),
-            selectInput(ns("featureanno"),
+            selectInput(
+                ns("featureanno"),
                 label = "Method",
                 choices = c("Roll down taxonomy", "Mark as unknown"), 
                 multiple = FALSE, selectize = FALSE, width = "250px"),
             div(
                 id = ns("buttondiv"),
-                fluidRow(width = 12, id = "actionbuttonrow",
-                    actionButton(ns("annobutton"), 
-                                 icon = icon("fas fa-angle-double-right"),
-                                 label = HTML("&nbsp;ASSIGN"), 
-                                 width = "100px"),
-                    actionButton(ns("resetbutton"),
-                                 icon = icon("fas fa-redo-alt"),
-                                 label = HTML("&nbsp;RESET"), 
-                                 width = "100px")
+                fluidRow(
+                    width = 12, id = "actionbuttonrow",
+                    actionButton(
+                        ns("annobutton"), 
+                        icon = icon("fas fa-angle-double-right"),
+                        label = HTML("&nbsp;ASSIGN"), 
+                        width = "100px"),
+                    actionButton(
+                        ns("resetbutton"),
+                        icon = icon("fas fa-redo-alt"),
+                        label = HTML("&nbsp;RESET"), 
+                        width = "100px")
                 ),
-                fluidRow(width = 12, id = "actionbuttonrow2",
-                         shinyjs::disabled(actionButton(ns("savebutton"), 
-                                          icon = icon("far fa-save"),
-                                          label = HTML("&nbsp;SAVE"),
-                                          width = "100px"))
+                fluidRow(
+                    width = 12, id = "actionbuttonrow2",
+                    shinyjs::disabled(
+                        actionButton(
+                            ns("savebutton"), 
+                            icon = icon("far fa-save"),
+                            label = HTML("&nbsp;SAVE"),
+                            width = "100px"))
                 )
             )
         ),
-        column(width = 9,
-            box(width = 10,
+        column(
+            width = 9,
+            box(
+                width = 10,
                 h2("FEATURE OVERVIEW"),
                 p("Available feature taxonomy for the counts data.  
                 Table settings allow paging through sections of the data, 
@@ -86,8 +112,10 @@ featureTableUI <- function(id) {
                 roll down mechanism. Modifications must be saved in order
                   to be available in the analysis sections.")
             ),
-            box(width = 12,
-                div(id = ns("downloaddiv"),
+            box(
+                width = 12,
+                div(
+                    id = ns("downloaddiv"),
                     downloadButton(ns("download_button"),"Download"),
                     DT::DTOutput(ns("featuredatatable"), width = "100%")
                 )
@@ -106,19 +134,19 @@ featureTableUI <- function(id) {
 getFeatModCode <- function(featureanno) {
     if (featureanno == "Mark as unknown") {
         paste(paste0("bufrownames <- row.names(fData(meData))"),
-            paste0("df <- as.data.frame(apply(fData(meData),2, 
+              paste0("df <- as.data.frame(apply(fData(meData),2, 
                    replaceWithUnknown))"),
-            paste0("rownames(df) <- bufrownames"),
-            paste0("meData <- addFeatData(meData,df)"),
-            sep = "\n"
+              paste0("rownames(df) <- bufrownames"),
+              paste0("meData <- addFeatData(meData,df)"),
+              sep = "\n"
         )
     } else if (featureanno == "Roll down taxonomy") {
         paste(paste0("bufcolnames <- names(fData(meData))"),
-            paste0("df <- as.data.frame(t(apply(fData(meData),1, 
+              paste0("df <- as.data.frame(t(apply(fData(meData),1, 
                    rollDownFeatures)))"),
-            paste0("names(df) <- bufcolnames"),
-            paste0("meData <- addFeatData(meData,df)"),
-            sep = "\n"
+              paste0("names(df) <- bufcolnames"),
+              paste0("meData <- addFeatData(meData,df)"),
+              sep = "\n"
         )
     }
 }
@@ -131,19 +159,19 @@ getFeatModCode <- function(featureanno) {
 #' @param meData MRExperiment storing the data
 #' @param featureModRep reactiveValue storing modifications performed on fData
 #'
+#' @return feature table server fragment - no return value
+#'
 #' @author Janina Reeder
 #' 
 #' @importFrom Biobase fData
-#'
-#' @export
 featureTable <- function(input, output, session, meData, featureModRep) {
     ns <- session$ns
-
+    
     ## stores the fData of the given MRExperiment
     featFrame <- reactiveVal(NULL)
     ## keeps track of whether annotation was performed
     annotated <- reactiveVal(FALSE)
-
+    
     ## initialize featFrame when meData becomes available
     observe({
         req(meData())
@@ -157,9 +185,9 @@ featureTable <- function(input, output, session, meData, featureModRep) {
         } else {
             shinyjs::enable("annobutton")
         }
-            
+        
     })
-
+    
     ## perform annotation op
     observeEvent(input$annobutton, {
         if (input$featureanno == "Mark as unknown") {
@@ -189,7 +217,7 @@ featureTable <- function(input, output, session, meData, featureModRep) {
         }
         shinyjs::enable("savebutton")
     })
-
+    
     ## revert annotation changes
     observeEvent(input$resetbutton, {
         req(meData())
@@ -201,7 +229,7 @@ featureTable <- function(input, output, session, meData, featureModRep) {
             shinyjs::disable("savebutton")
         }
     })
-
+    
     ## make changes permanent
     observeEvent(input$savebutton, {
         req(meData())
@@ -213,7 +241,7 @@ featureTable <- function(input, output, session, meData, featureModRep) {
             shinyjs::disable("savebutton")
         }
     })
-
+    
     ## render table showing feature data
     output$featuredatatable <- DT::renderDT({
         req(meData())

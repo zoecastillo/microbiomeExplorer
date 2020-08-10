@@ -15,6 +15,13 @@ modified featcol
 \description{
 Helper function to replace any un-annotated features with the term unknown
 }
+\examples{
+data("mouseData", package = "metagenomeSeq")
+featcol <- fData(mouseData)[["genus"]]
+featcol[featcol == "NA"] <- NA
+replaceWithUnknown(featcol)
+
+}
 \author{
 Janina Reeder
 }

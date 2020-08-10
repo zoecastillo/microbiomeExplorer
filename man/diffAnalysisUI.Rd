@@ -15,6 +15,10 @@ fluidRow containing the ui code
 \description{
 Diff Analysis Module - UI
 }
+\examples{
+diffAnalysisUI("diffanalysis_id")
+
+}
 \author{
 Janina Reeder
 }

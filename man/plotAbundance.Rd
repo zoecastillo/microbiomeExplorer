@@ -8,7 +8,7 @@ plotAbundance(
   aggdat,
   level,
   x_var = "SAMPLE_ID",
-  ind = 1:10,
+  ind = seq_len(10),
   plotTitle = "",
   ylab = "Reads",
   facet1 = NULL,
@@ -47,6 +47,12 @@ plotly plot
 }
 \description{
 This function plots the relative abundance of the top abundant features.
+}
+\examples{
+data("mouseData", package = "metagenomeSeq")
+aggdat <- aggFeatures(mouseData, level = "genus")
+plotAbundance(aggdat, level = "genus", x_var = "diet")
+
 }
 \author{
 Janina Reeder

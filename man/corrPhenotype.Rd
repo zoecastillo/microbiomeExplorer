@@ -6,8 +6,8 @@
 \usage{
 corrPhenotype(
   aggdat,
-  feature = NULL,
-  phenotype = NULL,
+  feature,
+  phenotype,
   log = TRUE,
   method = c("spearman", "pearson", "kendall"),
   addRegression = TRUE,
@@ -59,6 +59,12 @@ line should be drawn; default: TRUE}
 list holding plotly plot and lm fit
 }
 \description{
-This function plots a scatterplot of a feature and a phenotype along with sample
-correlation statistics.
+This function plots a scatterplot of a feature and a phenotype along with 
+sample correlation statistics.
+}
+\examples{
+data("mouseData", package = "metagenomeSeq")
+aggdat <- aggFeatures(mouseData, level = "genus")
+corrPhenotype(aggdat, feature = "Bacteroides", phenotype = "relativeTime")
+
 }

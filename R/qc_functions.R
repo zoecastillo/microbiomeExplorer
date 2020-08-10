@@ -25,6 +25,10 @@
 #' @importFrom metagenomeSeq MRcounts
 #'
 #' @return the plotly QC plot
+#' 
+#' @examples
+#' data("mouseData", package = "metagenomeSeq")
+#' makeQCPlot(mouseData)
 #'
 #' @export
 makeQCPlot <- function(MRobj, col_by = NULL, log = "none",
@@ -100,10 +104,10 @@ makeQCPlot <- function(MRobj, col_by = NULL, log = "none",
   
   
   ## generate actual plot
-  p <- plotly::plot_ly(plotdata, hoverinfo = "text", 
-                       height = pheight, width = pwidth,
-                       colors = getOption("me.colorvalues")[seq(1, 
-                                                                length(levels(group)))]) %>%
+  p <- plotly::plot_ly(
+    plotdata, hoverinfo = "text", 
+    height = pheight, width = pwidth,
+    colors = getOption("me.colorvalues")[seq(1, length(levels(group)))]) %>%
     plotly::add_segments(
       x = 0, y = filter_feat, xend = max_x, yend = filter_feat,
       line = list(color = paste0("rgba(119, 0, 0,", featalpha, ")"), 
@@ -157,6 +161,13 @@ makeQCPlot <- function(MRobj, col_by = NULL, log = "none",
 #' @param pheight overall plot height; default is 200
 #'
 #' @return plotly plot object
+#' 
+#' @examples 
+#' data("mouseData", package = "metagenomeSeq")
+#' plotlyHistogram(histvalue = colSums(MRcounts(mouseData) > 0),
+#'   plotTitle = "Feature distribution",
+#'   xaxisTitle = "features", yaxisTitle = "frequency")
+#' 
 #' @export
 plotlyHistogram <- function(histvalue, plotTitle, 
                             xaxisTitle = "", yaxisTitle = "",
@@ -231,21 +242,27 @@ plotlyHistogram <- function(histvalue, plotTitle,
 #' Function plotting a barplot showing number of OTUs per samples
 #'
 #' @param MRobj containing data to plot
-#' @param plotTitle title of the plot
 #' @param col_by phenotype to color bars by; default is NULL
 #' @param xaxisTitle name of xaxis; default is ""
 #' @param yaxisTitle name of yaxis; default is ""
 #' @param pwidth overall plot width; default is 600 
 #' @param pheight overall plot height; default is 450
-#' @param sortbyfreq boolean determining if bars should be sorted by frequency; default is FALSE
-#' @param pheno_sort order of pheno levels to sort by; ignored if sortbyfreq is TRUE
+#' @param sortbyfreq boolean determining if bars should be sorted by frequency; 
+#' default is FALSE
+#' @param pheno_sort order of pheno levels to sort by; 
+#' ignored if sortbyfreq is TRUE
 #' @param x_levels character vector holding x values in order to be shown
 #' 
 #' @importFrom metagenomeSeq MRcounts
 #'
 #' @return plotly plot object
+#' 
+#' @examples 
+#' data("mouseData", package = "metagenomeSeq")
+#' plotlySampleBarplot(mouseData)
+#' 
 #' @export
-plotlySampleBarplot <- function(MRobj, plotTitle, col_by = NULL,
+plotlySampleBarplot <- function(MRobj, col_by = NULL,
                                 xaxisTitle = "", yaxisTitle = "",
                                 pwidth = 600, pheight = 450,
                                 sortbyfreq = FALSE,
@@ -272,22 +289,25 @@ plotlySampleBarplot <- function(MRobj, plotTitle, col_by = NULL,
     x = colnames(cts), y = numofotus, color = group
   )
   if(isTRUE(sortbyfreq)){
-    plotdata[["x"]] <- factor(plotdata[["x"]], 
-                              levels = unique(plotdata[["x"]])[order(plotdata[["y"]], 
-                                                                     decreasing = TRUE)])
+    plotdata[["x"]] <- factor(
+      plotdata[["x"]], 
+      levels = unique(plotdata[["x"]])[order(plotdata[["y"]], 
+                                             decreasing = TRUE)])
   } else if(!is.null(pheno_sort) && !is.null(x_levels)){
     x_factor <- forcats::fct_explicit_na(
       factor(pData(MRobj)[, which(colnames(pData(MRobj)) == pheno_sort)]),
       na_level = "NA")
     plotdata$x_factor <- forcats::fct_relevel(x_factor,as.character(x_levels))
-    plotdata[["x"]] <- factor(plotdata[["x"]], 
-                              levels = plotdata[order(plotdata$x_factor), ][["x"]])
+    plotdata[["x"]] <- factor(
+      plotdata[["x"]], 
+      levels = plotdata[order(plotdata$x_factor), ][["x"]])
   }
   
-  p <- plotly::plot_ly(plotdata, hoverinfo = "text",
-                       height = pheight, width = pwidth,
-                       colors = getOption("me.colorvalues")[seq(1, 
-                                                                length(levels(group)))]) %>%
+  p <- plotly::plot_ly(
+    plotdata, hoverinfo = "text",
+    height = pheight, width = pwidth,
+    colors = getOption("me.colorvalues")[seq(1, 
+                                             length(levels(group)))]) %>%
     plotly::add_bars(
       x = ~x,
       y = ~y,

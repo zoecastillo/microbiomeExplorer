@@ -8,29 +8,34 @@
 #' @author Janina Reeder
 #'
 #' @return fluidRow containing the ui code
+#' 
+#' @examples interAnalysisUI("interanalysis_id")
+#' 
 #' @export
 interAnalysisUI <- function(id) {
   ns <- NS(id)
-
+  
   fluidRow(
-      width = 12,
-      column(
-          width = 3,
-          betaInputUI(ns("betaInput")),
-          heatmapInputUI(ns("heatmapInput"))
-      ),
-      column(
-          width = 9,
-          fluidRow(
-              width = 11,
-              box(width = 10,
-                  p("The inter sample page contains methods to analyze the microbial composition
-                  and diversity between samples using PCA and interactive heatmaps.")
-              ),
-              betaDiversityUI(ns("betaDiv")),
-              abundanceHeatmapUI(ns("heatmap"))
-          )
+    width = 12,
+    column(
+      width = 3,
+      betaInputUI(ns("betaInput")),
+      heatmapInputUI(ns("heatmapInput"))
+    ),
+    column(
+      width = 9,
+      fluidRow(
+        width = 11,
+        box(
+          width = 10,
+          p("The inter sample page contains methods to analyze the microbial 
+           composition and diversity between samples using PCA and interactive 
+           heatmaps.")
+        ),
+        betaDiversityUI(ns("betaDiv")),
+        abundanceHeatmapUI(ns("heatmap"))
       )
+    )
   )
 }
 
@@ -47,8 +52,6 @@ interAnalysisUI <- function(id) {
 #' @param aggData the aggregated MRExperiment object
 #'
 #' @return reactive holding code to be used in reports
-#'
-#' @export
 interAnalysis <- function(input, output, session, data, levelOpts,
                           chosenLevel, resetInput, aggData) {
   ## inter SAMPLE ANALYSIS
@@ -66,13 +69,13 @@ interAnalysis <- function(input, output, session, data, levelOpts,
   ## reactives storing heatmap settings
   hmSort <- reactiveVal("")
   hmFeatList <- reactiveVal(NULL)
-
+  
   ## update betaDist if a new measure was selected
   observe({
     req(betaDist() != betaSettings()$distance)
     betaDist(betaSettings()$distance)
   })
-
+  
   observe({
     req(resetInput())
     betaDist("")
@@ -91,27 +94,27 @@ interAnalysis <- function(input, output, session, data, levelOpts,
                            reset = resetInput
   )
   
-
+  
   heatmapSettings <- callModule(heatmapInput,
                                 "heatmapInput",
                                 meData = data$meData,
                                 reset = resetInput,
                                 aggDat = reactive(aggData$mrobj)
   )
-
-
-
+  
+  
+  
   ## update sorting method (only) if a new value was selected
   observe({
     req(hmSort() != heatmapSettings()$sorting)
     hmSort(heatmapSettings()$sorting)
   }, priority = 20)
-
+  
   ## stores selected features
   observe({
     hmFeatList(heatmapSettings()$featureselect)
   }, priority = 20)
-
+  
   abHeatRep <- callModule(abundanceHeatmap,
                           "heatmap",
                           aggDat = reactive(aggData$mrobj),
@@ -129,7 +132,7 @@ interAnalysis <- function(input, output, session, data, levelOpts,
       "abheat" = abHeatRep()
     )
   })
-
+  
   
   return(interRep)
   

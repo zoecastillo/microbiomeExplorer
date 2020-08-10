@@ -7,6 +7,9 @@ call}
 \usage{
 runMicrobiomeExplorer()
 }
+\value{
+the shiny application
+}
 \description{
 Main function to start the Microbiome Explorer Shiny app via a command line
 call

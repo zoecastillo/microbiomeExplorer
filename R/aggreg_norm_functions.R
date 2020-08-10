@@ -2,8 +2,9 @@
 
 
 #' Calls appropriate normalization functions depending on input parameter
-#' The two available methods included in the package are based on either calculating proportions 
-#' or by using cumulative sum scaling (CSS), Paulson, et al. Nat Meth 2013.
+#' The two available methods included in the package are based on either 
+#' calculating proportions or by using cumulative sum scaling (CSS), 
+#' Paulson, et al. Nat Meth 2013.
 #'
 #' @param MRobj the MRexperiment
 #' @param norm_method method to use for normalization; CSS or Proportional
@@ -11,6 +12,11 @@
 #' @importFrom metagenomeSeq cumNorm cumNormStatFast normFactors
 #'
 #' @return the normalized MRobj
+#' 
+#' @examples 
+#' data("mouseData", package = "metagenomeSeq")
+#' normalizeData(mouseData, norm_method = "CSS")
+#' 
 #' @export
 normalizeData <- function(MRobj, norm_method) {
   if (norm_method == "CSS") {
@@ -39,6 +45,10 @@ normalizeData <- function(MRobj, norm_method) {
 #'
 #' @importFrom metagenomeSeq aggTax MRcounts normFactors normFactors<-
 #' @importFrom Biobase pData<- fData<-
+#' 
+#' @examples 
+#' data("mouseData", package = "metagenomeSeq")
+#' aggFeatures(mouseData, level = "genus")
 #'
 #' @export
 aggFeatures <- function(MRobj, level = NULL, sort = TRUE) {
@@ -48,7 +58,7 @@ aggFeatures <- function(MRobj, level = NULL, sort = TRUE) {
       aggobj <- MRobj
     } else {
       aggobj <- aggTax(MRobj, lvl = level)
-      if(class(normFactors(MRobj)) == "numeric")
+      if(is(normFactors(MRobj), "numeric"))
         normFactors(aggobj) <- normFactors(MRobj)
     }
   } else {

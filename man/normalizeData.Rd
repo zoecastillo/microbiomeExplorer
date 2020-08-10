@@ -3,8 +3,9 @@
 \name{normalizeData}
 \alias{normalizeData}
 \title{Calls appropriate normalization functions depending on input parameter
-The two available methods included in the package are based on either calculating proportions 
-or by using cumulative sum scaling (CSS), Paulson, et al. Nat Meth 2013.}
+The two available methods included in the package are based on either 
+calculating proportions or by using cumulative sum scaling (CSS), 
+Paulson, et al. Nat Meth 2013.}
 \usage{
 normalizeData(MRobj, norm_method)
 }
@@ -18,6 +19,12 @@ the normalized MRobj
 }
 \description{
 Calls appropriate normalization functions depending on input parameter
-The two available methods included in the package are based on either calculating proportions 
-or by using cumulative sum scaling (CSS), Paulson, et al. Nat Meth 2013.
+The two available methods included in the package are based on either 
+calculating proportions or by using cumulative sum scaling (CSS), 
+Paulson, et al. Nat Meth 2013.
+}
+\examples{
+data("mouseData", package = "metagenomeSeq")
+normalizeData(mouseData, norm_method = "CSS")
+
 }

@@ -19,6 +19,9 @@ phenotypeTable(input, output, session, meData, phenoModRep, addPheno)
 
 \item{addPheno}{reactive boolean keeping track of pheno data modifications}
 }
+\value{
+phenotype table server fragment - no return value
+}
 \description{
 Phenotype table server module
 }
