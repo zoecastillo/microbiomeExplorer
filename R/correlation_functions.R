@@ -482,7 +482,7 @@ corrPhenotype <- function(aggdat, feature, phenotype, log = TRUE,
       emptyplot <- FALSE
       if (nrow(sp) == 0) {
         emptyplot <- TRUE
-      } else if (is.na(sp$phenotype)) {
+      } else if (all(is.na(sp$phenotype))) {
         emptyplot <- TRUE
       }
       if (emptyplot) {
