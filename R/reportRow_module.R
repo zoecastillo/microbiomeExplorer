@@ -94,6 +94,9 @@ reportRow <- function(input, output, session, type, content) {
         } else if (stringr::str_starts(codecontent()[1], 
                                        "plotLongFeature")) {
             "longitudinal"
+        } else if (stringr::str_starts(codecontent()[1], 
+                                       "plotAvgAbundance")) {
+            "intrafeature"
         } else {
             "blank"
         }

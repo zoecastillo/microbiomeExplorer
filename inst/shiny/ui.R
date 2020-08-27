@@ -111,6 +111,10 @@ shinyUI(
                                    intraAnalysisUI("intraAnalysis")
                                ),
                                tabPanel(
+                                   "INTRA FEATURE",
+                                   featureAnalysisUI("featureAnalysis")
+                               ),
+                               tabPanel(
                                    "INTER SAMPLE",
                                    interAnalysisUI("interAnalysis")
                                ),

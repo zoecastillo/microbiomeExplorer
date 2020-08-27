@@ -20,6 +20,7 @@ shinyServer(function(session, input, output) {
   js$disableTab("PHENOTYPE")
   js$disableTab("FEATURES")
   js$disableTab("INTRA SAMPLE")
+  js$disableTab("INTRA FEATURE")
   js$disableTab("INTER SAMPLE")
   js$disableTab("CORRELATION")
   js$disableTab("DIFFERENTIAL")
@@ -68,11 +69,13 @@ shinyServer(function(session, input, output) {
     js$enableTab("PHENOTYPE")
     js$enableTab("FEATURES")
     js$enableTab("INTRA SAMPLE")
+    js$enableTab("INTRA FEATURE")
     js$enableTab("INTER SAMPLE")
     js$enableTab("CORRELATION")
     js$enableTab("DIFFERENTIAL")
     js$enableTab("LONGITUDINAL")
     disable("intraAnalysis-intraInput-analysisbox")
+    disable("featureAnalysis-featureInput-analysisbox")
     disable("interAnalysis-betaInput-analysisbox")
     disable("interAnalysis-heatmapInput-analysisbox")
     disable("corrAnalysis-fCorrInput-analysisbox")
@@ -146,6 +149,7 @@ shinyServer(function(session, input, output) {
     req(aggData$mrobj)
     # enable analysis input modules when data is available
     enable("intraAnalysis-intraInput-analysisbox")
+    enable("featureAnalysis-featureInput-analysisbox")
     enable("interAnalysis-betaInput-analysisbox")
     enable("interAnalysis-heatmapInput-analysisbox")
     enable("corrAnalysis-fCorrInput-analysisbox")
@@ -159,6 +163,11 @@ shinyServer(function(session, input, output) {
   intraRep <- callModule(
     microbiomeExplorer:::intraAnalysis, "intraAnalysis", data, levelOpts,
     chosenLevel, resetInput, aggData, normalizedData)
+  
+  ## INTRA FEATURE ANALYSIS
+  featureRep <- callModule(
+    microbiomeExplorer:::featureAnalysis, "featureAnalysis", data,
+    resetInput, aggData, normalizedData)
   
   ## INTER SAMPLE ANALYSIS
   interRep <- callModule(
@@ -186,6 +195,7 @@ shinyServer(function(session, input, output) {
   ## capture report button clicks via reactive value (multiple buttons)
   reportClick <- reactiveVal(NULL)
   onclick("intraAnalysis-intraInput-reportButton", reportClick("intra"))
+  onclick("featureAnalysis-featureInput-reportButton", reportClick("feature"))
   onclick("interAnalysis-betaInput-reportButton", reportClick("beta"))
   onclick("interAnalysis-heatmapInput-reportButton", reportClick("heatmap"))
   onclick("corrAnalysis-fCorrInput-reportButton", reportClick("fcorr"))
@@ -203,6 +213,7 @@ shinyServer(function(session, input, output) {
         analysisRep(),
         switch(reportClick(),
                "intra" = intraRep(),
+               "feature" = featureRep(),
                "beta" = interRep()$beta,
                "heatmap" = interRep()$abheat,
                "fcorr" = corrRep()$fcor,

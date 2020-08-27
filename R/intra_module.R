@@ -518,7 +518,7 @@ featAbundance <- function(input, output, session,
       paste0("\tfeature = \"", selectedFeature(), "\","),
       paste0("\tylab = \"", input$featChoice, "\","),
       paste0("\tlog = ", 
-             'if'(is.null(input$log), "TRUE", input$log), ","),
+             'if'(is.null(input$logS), "TRUE", input$logS), ","),
       paste0("\tshowPoints = ", input$sP, ")\n\n"),
       sep = "\n"
     ))
