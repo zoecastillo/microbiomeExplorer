@@ -1,7 +1,7 @@
 Package: microbiomeExplorer
 Type: Package
 Title: Microbiome Exploration App
-Version: 0.99.2
+Version: 0.99.3
 Date: 2020-08-13
 Authors@R: c(
     person("Joseph", "Paulson", , "paulson.joseph@gene.com", role = c("aut")),
