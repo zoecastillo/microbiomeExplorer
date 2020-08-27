@@ -77,7 +77,7 @@ plotLongFeature <- function(aggdat, feature,
   ## group and summarize data by given settings: x_var, id_var  
   ## percentage (of x_var group) for percentage
   if (ylab == "Percentage") {
-    df2$yval <- 'if'(df2$total == 0, 0, (df2$yval / df2$total) * 100)
+    df2$yval <- ifelse(df2$total == 0, 0, (df2$yval / df2$total) * 100)
   }
   
   df2 <- df2 %>%

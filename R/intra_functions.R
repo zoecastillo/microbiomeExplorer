@@ -104,7 +104,7 @@ plotAbundance <- function(aggdat, level, x_var = "SAMPLE_ID",
       dplyr::group_by(x_var, facets, facet2s) %>%
       dplyr::summarise(total = sum(yval))
     df2 <- suppressMessages(dplyr::left_join(df2, dftotal))
-    df2$yval <- 'if'(df2$total == 0, 0, (df2$yval / df2$total) * 100)
+    df2$yval <- ifelse(df2$total == 0, 0, (df2$yval / df2$total) * 100)
   }
   
   
@@ -335,7 +335,7 @@ plotSingleFeature <- function(aggdat, feature = "other", x_var = "SAMPLE_ID",
   
   ## percentage (of x_var group) for percentage
   if (ylab == "Percentage") {
-    df2$yval <- 'if'(df2$total == 0, 0, (df2$yval / df2$total) * 100)
+    df2$yval <- ifelse(df2$total == 0, 0, (df2$yval / df2$total) * 100)
   }
   
   ## add name of feature dataframe columns
