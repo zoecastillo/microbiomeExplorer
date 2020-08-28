@@ -29,7 +29,7 @@
 #' plotAvgAbundance(aggdat, level = "genus")
 #'
 #' @export
-plotAvgAbundance <- function(aggdat, level, ind = 1:10, plotTitle = "", 
+plotAvgAbundance <- function(aggdat, level, ind = seq_len(10), plotTitle = "", 
                           ylab = "Reads", facet1 = NULL, facet2 = NULL, 
                           source = "A", pwidth = 500, pheight = 150) {
   facets <- NULL
@@ -73,7 +73,8 @@ plotAvgAbundance <- function(aggdat, level, ind = 1:10, plotTitle = "",
   }
   
   ## define color palette
-  pal <- grDevices::colorRampPalette(c(RColorBrewer::brewer.pal(min(length(ind), 12), "Paired")))
+  pal <- grDevices::colorRampPalette(
+    c(RColorBrewer::brewer.pal(min(length(ind), 12), "Paired")))
   colvalues <- c(pal(max(ind)), "gray")
   
   # percentage 

@@ -158,7 +158,7 @@ avgAbundance <- function(input, output, session,
                         level = featLevel(),
                         facet1 = facet1,
                         facet2 = facet2,
-                        ind = 1:numOfFeats(), 
+                        ind = seq_len(numOfFeats()), 
                         plotTitle = plotTitle,
                         ylab = ylab
     ) 
@@ -223,7 +223,7 @@ avgAbundance <- function(input, output, session,
         'if'(is.null(facet2),"NULL",paste0("\"",facet2, "\"")),
         ","
       ),
-      paste0("\tind = 1:", numOfFeats(), ","),
+      paste0("\tind = seq_len(", numOfFeats(), "),"),
       paste0("\tplotTitle = \"",plotTitle, "\","),
       paste0("\tylab = \"", ylab, "\")\n\n"),
       sep = "\n"

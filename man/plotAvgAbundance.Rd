@@ -7,7 +7,7 @@
 plotAvgAbundance(
   aggdat,
   level,
-  ind = 1:10,
+  ind = seq_len(10),
   plotTitle = "",
   ylab = "Reads",
   facet1 = NULL,
