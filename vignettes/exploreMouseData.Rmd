@@ -14,15 +14,15 @@ knitr::opts_chunk$set(
 )
 ```
 
-```{r setup, echo=TRUE, message = FALSE}
+```{r hiddensetup, echo=FALSE, message=FALSE}
 library(knitr)
 library(rmarkdown)
-library(microbiomeExplorer)
-library(magrittr)
-library(metagenomeSeq)
-library(shiny)
-
 doctype <- opts_knit$get("rmarkdown.pandoc.to")
+```
+
+```{r setup, echo=TRUE, message = FALSE}
+
+library(microbiomeExplorer)
 
 ```
 
@@ -78,7 +78,7 @@ meData <- filterMEData(mouseData,minpresence = 1, minfeats = 2, minreads = 2)
 
 Before starting an analysis, it is recommend to review the results of the sequencing experiment and perform quality control. Some samples may have lower number of features than expected or an overall low number of reads. There are several ways to filter samples considered not useful for downstream analyses. Multiple QC plots can be generated, including those showing the number of unique features in each sample as a barplot or in a scatterplot against the number of reads. These can be colored by specific phenotypes stored in the pData slot of the MRexperiment. In addition, histograms show the overall distribution of feature and read frequencies.
 
-```{r eval=TRUE, echo=TRUE}
+```{r eval=TRUE, echo=TRUE, warning=FALSE}
 makeQCPlot(meData, col_by = "diet",
        log = "none",
        filter_feat = 101,

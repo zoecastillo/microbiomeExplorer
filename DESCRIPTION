@@ -1,8 +1,8 @@
 Package: microbiomeExplorer
 Type: Package
 Title: Microbiome Exploration App
-Version: 0.99.4
-Date: 2020-08-27
+Version: 0.99.5
+Date: 2020-10-06
 Authors@R: c(
     person("Joseph", "Paulson", , "paulson.joseph@gene.com", role = c("aut")),
     person("Janina", "Reeder", , "reederj1@gene.com", role = c("aut", "cre")),
@@ -15,12 +15,10 @@ Description: The MicrobiomeExplorer R package is designed to facilitate the anal
   analysis report generation.
 License: MIT + file LICENSE
 Imports:
-  shiny,
   shinyjs,
   shinydashboard,
   shinycssloaders,
   shinyWidgets,
-  magrittr,
   rmarkdown (>= 1.9.0),
   DESeq2,
   RColorBrewer, 
@@ -46,6 +44,8 @@ Imports:
   methods,
   plotly (>= 4.9.1)
 Depends:
+  shiny,
+  magrittr,
   metagenomeSeq, 
   Biobase
 Suggests: 
