@@ -71,11 +71,20 @@ shinyUI(
                     })
                   ')),
             shinyjs::useShinyjs(),
-            shinyjs::extendShinyjs(script = "JS/parsePhenoFilters.js"),
-            shinyjs::extendShinyjs(script = "JS/enableTabs.js"),
-            shinyjs::extendShinyjs(script = "JS/traceName.js"),
-            shinyjs::extendShinyjs(script = "JS/handleModebar.js"),
-            shinyjs::extendShinyjs(script = "JS/changeTable.js"),
+            shinyjs::extendShinyjs(script = "JS/parsePhenoFilters.js",
+                                   functions = c("parsePhenoFilters")),
+            shinyjs::extendShinyjs(script = "JS/enableTabs.js",
+                                   functions = c("disableTab",
+                                                 "enableTab",
+                                                 "enableAll",
+                                                 "collapse")),
+            shinyjs::extendShinyjs(script = "JS/traceName.js",
+                                   functions = c("getTraceName")),
+            shinyjs::extendShinyjs(script = "JS/handleModebar.js",
+                                   functions = c("resetAxes")),
+            shinyjs::extendShinyjs(script = "JS/changeTable.js",
+                                   functions = c("moveButton",
+                                                 "removeInputElems")),
 
             tabItems(
                 ##  DATA INPUT PAGES 
