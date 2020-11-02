@@ -87,10 +87,14 @@ shinyServer(function(session, input, output) {
       featName <- "unavailable"
     } else {
       featName <- featName[!(featName %in% getOption("me.featurenames"))]
-      safeIndex <- sapply(featName, function(f){
-        length(levels(as.factor(fData(data$meData())[[f]]))) > 1
-      })
-      featName <- featName[safeIndex]
+      if(length(featName) > 0){
+        safeIndex <- sapply(featName, function(f){
+          length(levels(as.factor(fData(data$meData())[[f]]))) > 1
+        })
+        featName <- featName[safeIndex]
+      } else {
+        featName <- colnames(fData(data$meData()))[1]
+      }
     }
     if(!identical(levelOpts(),featName)){
       genusindex <- grepl("enus",featName)

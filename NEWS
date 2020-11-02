@@ -1,2 +1,7 @@
+version 1.0.2:
+	+ fixed bug in correlation analysis on phenotypes with NaN values
+	+ prevented application crash on loading ill-formatted feature data
+version 1.0.1:
+	+ adjusted to be compatible with shinyjs 2.0.0
 version 1.0.0: 
 	+ Release

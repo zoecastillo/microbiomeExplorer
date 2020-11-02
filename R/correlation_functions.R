@@ -196,6 +196,8 @@ corrFeature <- function(aggdat, feat1, feat2,
         dplyr::group_by(facets) %>%
         dplyr::filter(facets %in% f)
       
+      sp <- sp[!is.na(sp$feat1) & !is.na(sp$feat2),]
+      
       if (j == maxj) {
         xaxis_text <- paste0(logtext, xlab[i])
       }
@@ -429,6 +431,7 @@ corrPhenotype <- function(aggdat, feature, phenotype, log = TRUE,
     facetvals <- "nofacets"
   }
   
+  
   if (!is.null(facet2)) {
     facetvals2 <- levels(df2[, facet2])
   } else {
@@ -474,6 +477,8 @@ corrPhenotype <- function(aggdat, feature, phenotype, log = TRUE,
       sp <- sdf %>%
         dplyr::group_by(facets) %>%
         dplyr::filter(facets %in% f)
+      
+      sp <- sp[!is.na(sp$feature) & !is.na(sp$phenotype),]
       
       if (j == maxj) {
         xaxis_text <- paste0(logtext, xlab[i])
