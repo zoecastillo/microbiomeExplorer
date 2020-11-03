@@ -48,6 +48,25 @@ rollDownFeatures <- function(featrow) {
     return(featrow)
 }
 
+splitColumns <- function(featData){
+    if(is.null(featData)){
+        return(NULL)
+    }
+    if(length(featData) == 0){
+        return(NULL)
+    }
+    if(!stringr::str_detect(featData[1],";")){
+        return("Error: Expecting ';' as a separating character. Not found.")
+    }
+    featList <- lapply(featData, function(f){
+        stringr::str_trim(
+            stringr::str_split(f,";")[[1]]
+        )
+    })
+    numofcols <- max(lengths(featList))
+    featList %>% purrr::map_dfr(~ as.data.frame(t(.)))
+}
+
 
 #' Feature table UI module
 #'
@@ -66,6 +85,22 @@ featureTableUI <- function(id) {
     fluidRow(
         column(
             width = 3, id = ns("featannocol"),
+            shinyjs::hidden(
+                div(
+                    id = ns("splitdiv"),
+                    h4("SPLIT COLUMNS"),
+                    selectInput(
+                        ns("splittaxonomy"),
+                        label = "Choose taxonomy column",
+                        choices = "", 
+                        multiple = FALSE, selectize = FALSE, width = "250px"),
+                    actionButton(
+                        ns("splitbutton"), 
+                        icon = icon("fas fa-angle-double-right"),
+                        label = HTML("&nbspSPLIT"), 
+                        width = "100px")
+                )
+            ),
             h4("ANNOTATE BLANK VALUES"),
             selectInput(
                 ns("featureanno"),
@@ -175,6 +210,7 @@ featureTable <- function(input, output, session, meData, featureModRep) {
     ## initialize featFrame when meData becomes available
     observe({
         req(meData())
+        shinyjs::hide("splitdiv")
         isolate(featFrame(fData(meData())))
     })
     
@@ -185,7 +221,29 @@ featureTable <- function(input, output, session, meData, featureModRep) {
         } else {
             shinyjs::enable("annobutton")
         }
-        
+        if(nrow(featFrame()) > 0){
+            firstrow <- featFrame()[1,]
+            firstrow <- firstrow[!sapply(firstrow,is.numeric)]
+            if(length(firstrow) > 0 && 
+               any(sapply(firstrow,stringr::str_detect, pattern = ";"))){
+                shinyjs::show("splitdiv")
+                updateSelectInput(session,"splittaxonomy",
+                                  choices = names(firstrow))
+            }
+        }
+    })
+    
+    observeEvent(input$splitbutton, {
+        req(input$splittaxonomy %in% names(featFrame()))
+        bufrownames <- row.names(featFrame())
+        shinyjs::addClass("featuredatatable", "transparent")
+        df <- splitColumns(featFrame()[[input$splittaxonomy]])
+        rownames(df) <- bufrownames
+        shinyjs::removeClass("featuredatatable", "transparent")
+        ## update stored feature frame
+        featFrame(df)
+        annotated(TRUE)
+        shinyjs::enable("savebutton")
     })
     
     ## perform annotation op
