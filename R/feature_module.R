@@ -186,6 +186,22 @@ getFeatModCode <- function(featureanno) {
     }
 }
 
+#' Helper function returning the fData modifications as strings for 
+#' report generation
+#'
+#' @param splittaxonomy name of column to split on
+#'
+#' @return String containing R code performing the modification
+getFeatSplitCode <- function(splittaxonomy) {
+    paste(paste0("bufrownames <- row.names(fData(meData))"),
+          paste0("df <- splitColumns(fData(meData)[[\"",
+                 splittaxonomy,"\"]])"),
+          paste0("rownames(df) <- bufrownames"),
+          paste0("meData <- addFeatData(meData,df)"),
+          sep = "\n"
+    )
+}
+
 #' Feature table module server code
 #'
 #' @param input shiny input
@@ -206,17 +222,17 @@ featureTable <- function(input, output, session, meData, featureModRep) {
     featFrame <- reactiveVal(NULL)
     ## keeps track of whether annotation was performed
     annotated <- reactiveVal(FALSE)
+    taxsplit <- reactiveVal(FALSE)
     
     ## initialize featFrame when meData becomes available
     observe({
         req(meData())
-        shinyjs::hide("splitdiv")
         isolate(featFrame(fData(meData())))
     })
     
     observe({
         req(featFrame())
-        if(ncol(featFrame()) < 2){
+        if(ncol(featFrame()) <= 2){
             shinyjs::disable("annobutton")
         } else {
             shinyjs::enable("annobutton")
@@ -229,7 +245,11 @@ featureTable <- function(input, output, session, meData, featureModRep) {
                 shinyjs::show("splitdiv")
                 updateSelectInput(session,"splittaxonomy",
                                   choices = names(firstrow))
+            } else {
+                shinyjs::hide("splitdiv")
             }
+        } else {
+            shinyjs::hide("splitdiv")
         }
     })
     
@@ -242,7 +262,7 @@ featureTable <- function(input, output, session, meData, featureModRep) {
         shinyjs::removeClass("featuredatatable", "transparent")
         ## update stored feature frame
         featFrame(df)
-        annotated(TRUE)
+        taxsplit(TRUE)
         shinyjs::enable("savebutton")
     })
     
@@ -279,10 +299,11 @@ featureTable <- function(input, output, session, meData, featureModRep) {
     ## revert annotation changes
     observeEvent(input$resetbutton, {
         req(meData())
-        if (annotated()) {
+        if (annotated() || taxsplit()) {
             ## go back to original dataset
             featFrame(fData(meData()))
             annotated(FALSE)
+            taxsplit(FALSE)
             featureModRep(NULL)
             shinyjs::disable("savebutton")
         }
@@ -291,11 +312,19 @@ featureTable <- function(input, output, session, meData, featureModRep) {
     ## make changes permanent
     observeEvent(input$savebutton, {
         req(meData())
-        if (annotated()) {
+        if (annotated() || taxsplit()) {
             ## adjust original dataset
             meData(addFeatData(meData(), featFrame()))
-            annotated(FALSE)
-            featureModRep(getFeatModCode(input$featureanno))
+            if(taxsplit()){
+                featureModRep(getFeatSplitCode(input$splittaxonomy))
+                taxsplit(FALSE)
+            }
+            if(annotated()){
+                featureModRep(paste(featureModRep(),
+                                    getFeatModCode(input$featureanno),
+                                    sep = "\n"))
+                annotated(FALSE)
+            }
             shinyjs::disable("savebutton")
         }
     })
