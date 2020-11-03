@@ -15,7 +15,7 @@ Description: The MicrobiomeExplorer R package is designed to facilitate the anal
   analysis report generation.
 License: MIT + file LICENSE
 Imports:
-  shinyjs,
+  shinyjs (>= 2.0.0),
   shinydashboard,
   shinycssloaders,
   shinyWidgets,
