@@ -24,6 +24,7 @@ Imports:
   RColorBrewer, 
   dplyr,
   tidyr, 
+  purrr,
   rlang,
   knitr,
   readr, 
