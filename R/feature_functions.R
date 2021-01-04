@@ -42,7 +42,7 @@ plotAvgAbundance <- function(aggdat, level, ind = seq_len(10), plotTitle = "",
   ordmat <- aggmat
   
   ## combine all other features as "other"
-  if (nrow(aggmat) > max(ind)) {
+  if (nrow(aggmat) > (max(ind) + 1)) {
     ordmat <- rbind(aggmat[ind, ], 
                     other = colSums(aggmat[seq((max(ind) + 1),nrow(aggmat))
                                            , ]))

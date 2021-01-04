@@ -44,12 +44,14 @@ plotAbundance <- function(aggdat, level, x_var = "SAMPLE_ID",
   ordmat <- aggmat
   xlab <- as.character(x_var)
   
+  numofcols <- nrow(ordmat) - 1
   ## combine all other features as "other"
-  if (nrow(aggmat) > max(ind)) {
+  if (nrow(aggmat) > (max(ind) + 1)) {
     ordmat <- rbind(aggmat[ind, ], 
                     other = colSums(aggmat[seq((max(ind) + 1),nrow(aggmat))
                                            , ]))
-  }
+    numofcols <- max(ind)
+  } 
   
   ## prepare datastructure for plotting: join with relevant phenodata
   df <- reshape2::melt(ordmat, varnames = c(level, "samname"), 
@@ -85,12 +87,13 @@ plotAbundance <- function(aggdat, level, x_var = "SAMPLE_ID",
   
   ## define color palette
   pal <- grDevices::colorRampPalette(
-    c(RColorBrewer::brewer.pal(min(length(ind), 12), "Paired")))
-  colvalues <- c(pal(max(ind)), "gray")
+    c(RColorBrewer::brewer.pal(min(numofcols, 12), "Paired")))
+  colvalues <- c(pal(numofcols), "gray")
   
   ## get yval for every group to be shown (by feature, x_var and both 
   ## facets as needed)
   ## mean (of x_var group) used for numbers
+
   df2 <- df2 %>%
     dplyr::group_by(Family = get(level), x_var = get(x_var), 
                     facets = get(facet1), facet2s = get(facet2)) %>%
@@ -267,12 +270,15 @@ plotSingleFeature <- function(aggdat, feature = "other", x_var = "SAMPLE_ID",
     ylab <- paste0("Log ", ylab)
   }
   
-  if (feature == "other") {
+  numofcols <- min(nrow(aggmat),max(ind))
+  if ((feature == "other") && (nrow(aggmat) > (max(ind) + 1))) {
     aggmat <- rbind(aggmat[ind, ], 
                     other = colSums(aggmat[seq((max(ind) + 1),
                                                nrow(aggmat))
                                            , ]))
+    numofcols <- max(ind) 
   }
+  
   feat_pos <- match(feature, rownames(aggmat))
   ## feature not found; this happens when data is reaggregated in App
   if (is.na(feat_pos)) {
@@ -317,10 +323,12 @@ plotSingleFeature <- function(aggdat, feature = "other", x_var = "SAMPLE_ID",
     facetvals2 <- "nofacets"
   }
   
+  
+  ##TODO: fix colors here
   ## set up color palette (same as relative abundance for color consistency)
   pal <- grDevices::colorRampPalette(
-    c(RColorBrewer::brewer.pal(min(length(ind), 12), "Paired")))
-  colvalues <- c(pal(max(ind)), "gray")
+    c(RColorBrewer::brewer.pal(min(numofcols, 12), "Paired")))
+  colvalues <- c(pal(numofcols), "gray")
   
   if (feat_pos <= max(ind)) {
     colvalues <- colvalues[feat_pos]
@@ -529,6 +537,7 @@ plotAlpha <- function(aggdat, level,
   df2$text <- paste0(
     "<b>",df2$samname,"</b><br />",
     round(df2$Diversity, digits = getOption("me.round_digits")))
+
   df2 <- df2 %>%
     dplyr::group_by(x_var = get(x_var), 
                     facets = get(facet1), facet2s = get(facet2))
