@@ -55,9 +55,7 @@ splitColumns <- function(featData){
     if(length(featData) == 0){
         return(NULL)
     }
-    if(!stringr::str_detect(featData[1],";")){
-        return("Error: Expecting ';' as a separating character. Not found.")
-    }
+
     featList <- lapply(featData, function(f){
         stringr::str_trim(
             stringr::str_split(f,";")[[1]]
@@ -238,14 +236,11 @@ featureTable <- function(input, output, session, meData, featureModRep) {
             shinyjs::enable("annobutton")
         }
         if(nrow(featFrame()) > 0){
-            firstrow <- featFrame()[1,]
-            firstrow <- firstrow[!sapply(firstrow,is.numeric)]
-            if(length(firstrow) > 0 && 
-               any(sapply(firstrow,stringr::str_detect, pattern = ";"), 
-                   na.rm = TRUE)){
+            semicolon_index <- grepl(";",featFrame())
+            if(any(semicolon_index)){
                 shinyjs::show("splitdiv")
                 updateSelectInput(session,"splittaxonomy",
-                                  choices = names(firstrow))
+                                  choices = names(featFrame())[semicolon_index])
             } else {
                 shinyjs::hide("splitdiv")
             }
