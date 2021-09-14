@@ -241,7 +241,8 @@ featureTable <- function(input, output, session, meData, featureModRep) {
             firstrow <- featFrame()[1,]
             firstrow <- firstrow[!sapply(firstrow,is.numeric)]
             if(length(firstrow) > 0 && 
-               any(sapply(firstrow,stringr::str_detect, pattern = ";"))){
+               any(sapply(firstrow,stringr::str_detect, pattern = ";"), 
+                   na.rm = TRUE)){
                 shinyjs::show("splitdiv")
                 updateSelectInput(session,"splittaxonomy",
                                   choices = names(firstrow))
