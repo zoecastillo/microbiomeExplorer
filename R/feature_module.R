@@ -55,7 +55,7 @@ splitColumns <- function(featData){
     if(length(featData) == 0){
         return(NULL)
     }
-
+    
     featList <- lapply(featData, function(f){
         stringr::str_trim(
             stringr::str_split(f,";")[[1]]
@@ -235,8 +235,11 @@ featureTable <- function(input, output, session, meData, featureModRep) {
         } else {
             shinyjs::enable("annobutton")
         }
-        if(nrow(featFrame()) > 0){
-            semicolon_index <- grepl(";",featFrame())
+        if(nrow(featFrame()) > 0 && ncol(featFrame()) > 0){
+            semicolon_index <- sapply(
+                seq(1,ncol(featFrame())), 
+                function(i) any(grepl(";", featFrame()[[i]]))
+            )
             if(any(semicolon_index)){
                 shinyjs::show("splitdiv")
                 updateSelectInput(session,"splittaxonomy",
