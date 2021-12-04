@@ -476,7 +476,7 @@ generateReport <- function(rcode,
   cat(file = stderr(), "-- merged code --\n")
   
   ## handle files, processing and output
-  rscript <- paste0(dir, "/", filename, ".R")
+  rscript <- file.path(dir, paste0(filename, ".R"))
   cat(report, sep = "\n", file = rscript)
   knitr::spin(rscript, knit = FALSE)
   rmarkdown::render(rscript, output_format = output)
