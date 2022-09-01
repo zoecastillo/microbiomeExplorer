@@ -53,7 +53,7 @@ designPairs <- function(levels) {
 #' @param phenolevels levels of the phenotype to restrict the comparison to
 #' @param log Log2 transform data. Default is TRUE.
 #' @param method Differential testing method. One of "limma" (default),
-#' "Kruskal-Wallis", "ZILN", or "DESeq2".
+#' "Kruskal-Wallis", or "DESeq2".
 #' @param coef Numeric which indicates which pairwise comparison to analyze
 #' when there are more than two groups. Corresponds to the column number of the
 #' model matrix produced by \code{\link{designPairs}()}. If NULL, a test of any
@@ -76,7 +76,7 @@ runDiffTest <- function(
                         log = TRUE, coef = NULL,
                         method = c("limma", 
                                    "Kruskal-Wallis", 
-                                   "ZILN", 
+                                   #"ZILN", 
                                    "DESeq2")) {
   phenoTable <- pData(aggdat)
   method <- match.arg(method)
@@ -132,20 +132,22 @@ runDiffTest <- function(
       dds, 
       independentFiltering = FALSE, 
       cooksCutoff = FALSE)
-  } else if (method == "ZILN") {
-    good.ind <- which(rowSums(design[, c(1,2)]) == 1)
-    ## app requires selection of specific phenolevels instead
-    if (length(levels(pd)) > 2) {
-      warning("Only using first two levels of phenotype")
-    }
-    design2 <- stats::model.matrix(~pd)
-    fit <- fitFeatureModel(aggdat[, good.ind],
-                           mod = design2[good.ind, c(1,2)],
-                           spos = FALSE
-    )
-    out <- MRtable(fit, group = 3, number = Inf)
+    #removing ZILN until lmFit adjusts error check back to ==
+  # } else if (method == "ZILN") {
+  #   good.ind <- which(rowSums(design[, c(1,2)]) == 1)
+  #   ## app requires selection of specific phenolevels instead
+  #   if (length(levels(pd)) > 2) {
+  #     warning("Only using first two levels of phenotype")
+  #   }
+  #   design2 <- stats::model.matrix(~pd)[good.ind, c(1,2)]
+  #   names(dim(design2)) <- c("Samples","")
+  #   fit <- fitFeatureModel(aggdat[, good.ind],
+  #                          mod = design2,
+  #                          spos = FALSE
+  #   )
+  #   out <- MRtable(fit, group = 3, number = Inf)
   } else if (method == "limma") {
-    fit <- limma::lmFit(aggmat, design)
+    fit <- limma::lmFit(as.data.frame(aggmat), design)
     contrast.matrix <- designPairs(colnames(design))
     fit2 <- limma::contrasts.fit(fit, contrast.matrix)
     fit2 <- limma::eBayes(fit2)
@@ -159,7 +161,7 @@ runDiffTest <- function(
     }
     
   } else if (method == "Kruskal-Wallis"){ 
-    fit <- limma::lmFit(aggmat, design)
+    fit <- limma::lmFit(as.data.frame(aggmat), design)
     contrast.matrix <- designPairs(colnames(design))
     fit2 <- limma::contrasts.fit(fit, contrast.matrix)
     fit2 <- limma::eBayes(fit2)

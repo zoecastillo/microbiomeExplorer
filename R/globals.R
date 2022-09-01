@@ -16,7 +16,9 @@
                           "confidence","Confidence","CONFIDENCE",
                           "clusterCenter","clustercenter","CLUSTERCENTER"),
     me.corrmethods = c("spearman", "pearson", "kendall"),
-    me.diffmethods = c("DESeq2", "Kruskal-Wallis", "ZILN", "limma"),
+    #removing ZILN as an option to avoid error in lmFit asking 
+    #for identical ncol and nrow instead of equal
+    me.diffmethods = c("DESeq2", "Kruskal-Wallis", "limma"),
     me.facetnum = 15,
     me.shapenum = 6,
     me.minwebgl = 500,

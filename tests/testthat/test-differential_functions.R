@@ -24,23 +24,24 @@ test_that("run differential test - Kruskal-Wallis", {
   expect_equal(as.character(kwMD[1,"KW-Statistic"]),"92.951")
 })
 
-test_that("run differential test - ZILN", {
-  expect_warning(runDiffTest(aggdat = aggdat,
-                             level = "genus",
-                             phenotype = "diet",
-                             method = "ZILN"))
-  zilnMD <- suppressWarnings(runDiffTest(aggdat = aggdat,
-                      level = "genus",
-                      phenotype = "diet",
-                      method = "ZILN"))
-  expect_equal(names(zilnMD),c("genus", "+samples in group 0", "+samples in group 1", "counts in group 0", "counts in group 1",
-                               "logFC", "se", "pvalues", "adjPvalues"))
-  zilnMD <- zilnMD[order(zilnMD$logFC),]
-  expect_equal(as.character(zilnMD[1,"genus"]),"Prevotella")
-  expect_equal(as.character(zilnMD[2,"genus"]),"Ruminococcus")
-  expect_equal(as.character(zilnMD[nrow(zilnMD),"genus"]),"Enterococcus")
-  expect_equal(as.character(zilnMD[1,"logFC"]),"-4.916")
-})
+#ZILN IS NOT AVAILABLE ATM DUE TO ISSUE WITH LIMMA UPDATE IN METAGENOMESEQ
+# test_that("run differential test - ZILN", {
+#   expect_warning(runDiffTest(aggdat = aggdat,
+#                              level = "genus",
+#                              phenotype = "diet",
+#                              method = "ZILN"))
+#   zilnMD <- suppressWarnings(runDiffTest(aggdat = aggdat,
+#                       level = "genus",
+#                       phenotype = "diet",
+#                       method = "ZILN"))
+#   expect_equal(names(zilnMD),c("genus", "+samples in group 0", "+samples in group 1", "counts in group 0", "counts in group 1",
+#                                "logFC", "se", "pvalues", "adjPvalues"))
+#   zilnMD <- zilnMD[order(zilnMD$logFC),]
+#   expect_equal(as.character(zilnMD[1,"genus"]),"Prevotella")
+#   expect_equal(as.character(zilnMD[2,"genus"]),"Ruminococcus")
+#   expect_equal(as.character(zilnMD[nrow(zilnMD),"genus"]),"Enterococcus")
+#   expect_equal(as.character(zilnMD[1,"logFC"]),"-4.916")
+# })
 
 test_that("run differential test - DeSeq2", {
   skip_on_cran()

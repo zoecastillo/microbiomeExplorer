@@ -1,3 +1,6 @@
+version 1.7.1:
+  + removed ZILN method as metagenomeSeq's fitFeatureModel runs into issue with changed approach to compare ncol and nrow in limma's lmFit 
+  + cast matrixes into data.frame before calling lmFit to circumvent identical check for ncol & nrow in lmFit (if dimensions are named, results are equal, but not identical)
 version 1.0.3:
 	+ added option to split a taxonomy column (as obtained via qiime) within the application
 version 1.0.2:
