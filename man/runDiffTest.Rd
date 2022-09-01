@@ -11,7 +11,7 @@ runDiffTest(
   phenolevels = NULL,
   log = TRUE,
   coef = NULL,
-  method = c("limma", "Kruskal-Wallis", "ZILN", "DESeq2")
+  method = c("limma", "Kruskal-Wallis", "DESeq2")
 )
 }
 \arguments{
@@ -31,7 +31,7 @@ model matrix produced by \code{\link{designPairs}()}. If NULL, a test of any
 difference between all groups is performed.}
 
 \item{method}{Differential testing method. One of "limma" (default),
-"Kruskal-Wallis", "ZILN", or "DESeq2".}
+"Kruskal-Wallis", or "DESeq2".}
 }
 \value{
 data.frame holding results of the differential analysis
